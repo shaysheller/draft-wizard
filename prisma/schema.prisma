@@ -17,8 +17,8 @@ model Player {
   name      String
   role      Position 
   adp       Int 
-  team      String
-  bye       Int
+  team      String  @default("")
+  bye       Int     @default(-1)
 }
 
 
