@@ -3,7 +3,24 @@ import Link from "next/link";
 import { api } from "~/utils/api";
 
 export default function Home() {
-  const hello = api.example.hello.useQuery({ text: "from tRPC" });
+  const { data, isLoading, error } = api.example.getAll.useQuery();
+
+  const sortedPlayers = data
+    ?.map((player) => {
+      return {
+        player: player.name,
+        team: player.team,
+        adp: player.adp,
+        bye: player.bye,
+        position: player.role,
+      };
+    })
+    .sort((a, b) => {
+      return a.adp - b.adp;
+    });
+
+  if (isLoading) return <div>...Loading</div>;
+  if (error) return <div>No data found</div>;
 
   return (
     <>
@@ -13,10 +30,8 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
-        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
-          <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
-            Create <span className="text-[hsl(280,100%,70%)]">T3</span> App
-          </h1>
+        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 text-white">
+          {JSON.stringify(sortedPlayers)}
         </div>
       </main>
     </>
