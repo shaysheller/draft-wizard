@@ -1,26 +1,36 @@
 import Head from "next/head";
 import Link from "next/link";
 import { api } from "~/utils/api";
+import { type NextPage } from "next";
+import { LoadingPage } from "~/components/loading";
+import { type RouterOutputs } from "~/utils/api";
+import { PageLayout } from "~/components/layout";
+import { useState, useEffect } from "react";
+import { useInfiniteQuery } from "@tanstack/react-query";
 
-export default function Home() {
-  const { data, isLoading, error } = api.example.getAll.useQuery();
+const Home: NextPage = () => {
+  // const { data, isLoading, isError } = api.example.getAll.useQuery();
 
-  const sortedPlayers = data
-    ?.map((player) => {
-      return {
-        player: player.name,
-        team: player.team,
-        adp: player.adp,
-        bye: player.bye,
-        position: player.role,
-      };
-    })
-    .sort((a, b) => {
-      return a.adp - b.adp;
-    });
+  const { data, fetchNextPage } = api.example.infinitePosts.useInfiniteQuery(
+    {
+      limit: 10,
+    },
+    {
+      getNextPageParam: (lastPage) => lastPage.nextCursor, // Replace 'nextCursor' with the actual field name from your response
+    }
+  );
 
-  if (isLoading) return <div>...Loading</div>;
-  if (error) return <div>No data found</div>;
+  const handleClick = async () => {
+    await fetchNextPage();
+    return;
+  };
+
+  if (!data) return <div>kekw</div>;
+
+  const allItems = data?.pages?.flatMap((page) => page.items) ?? [];
+
+  // if (isLoading) return <LoadingPage size={60} />;
+  // if (isError) return <div>No data found</div>;
 
   return (
     <>
@@ -31,9 +41,58 @@ export default function Home() {
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 text-white">
-          {JSON.stringify(sortedPlayers)}
+          {allItems.map((player) => (
+            <Player {...player} key={player.id} />
+          ))}
         </div>
+        <button
+          onClick={handleClick}
+          className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+        >
+          LOAD MORE
+        </button>
       </main>
     </>
   );
-}
+};
+
+// infers the return type from example router with getall call and that returns an array so we will insert a number to get the individual player
+type Player = RouterOutputs["example"]["getAll"][number];
+
+const Player = (props: Player) => {
+  const player = props;
+
+  return (
+    <div key={player.id} className="flex gap-3 border-b border-slate-400 p-4">
+      <div className="flex gap-4">
+        <div className="flex gap-5 text-slate-300"></div>
+        <span className="text-2xl">
+          {player.name}: {player.role}
+        </span>
+        <span className="text-2xl">Team: {player.team}</span>
+        <span className="text-2xl">Bye: {player.bye}</span>
+        <span className="text-2xl">ADP: {player.adp}</span>
+        <button className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700">
+          Draft
+        </button>
+      </div>
+    </div>
+  );
+};
+// could try and add link to fantasy pros but it would take some wrangling in the db
+// might need to separate first and last names into their own field - it still wont work perfectly for mfs with weird names though
+
+export default Home;
+
+/* 
+  does it make sense to getserversideprops to fetch the teams? 
+  I Think it only makes sense if i want to store the teams in a db - > it doesnt' really make sense because i don't give a shit about seo 
+  it could make sense if i wanted to add the teams depth charts though
+
+
+  ideas to practice SSR: 
+    add my own depth charts just of the most important information and then ssr them because they won't really be updating
+    then they will be cached so once they load the first time it will be a bit slow, but after that we should be able to access them instantly 
+
+
+*/
