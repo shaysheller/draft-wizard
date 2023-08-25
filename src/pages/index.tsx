@@ -8,31 +8,51 @@ import { PageLayout } from "~/components/layout";
 import { useState, useEffect } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
+/*
+  change color of box based on the players position
+*/
+
+const positionColors = {
+  WR: "bg-green-400",
+  QB: "bg-blue-500",
+  RB: "bg-red-500",
+  K: "bg-gray-500",
+  TE: "bg-violet-500",
+  DST: "bg-yellow-500",
+};
+
 const Home: NextPage = () => {
   /*
     want to implement infinite scrolling instead of just the click thing
   */
 
-  const { data, fetchNextPage } = api.example.infinitePosts.useInfiniteQuery(
-    {
-      limit: 10,
-    },
-    {
-      getNextPageParam: (lastPage) => lastPage.nextCursor, // Replace 'nextCursor' with the actual field name from your response
-    }
-  );
+  const { data, fetchNextPage, isLoading, isFetching, hasNextPage } =
+    api.example.infinitePosts.useInfiniteQuery(
+      {
+        limit: 10,
+      },
+      {
+        getNextPageParam: (lastPage) => lastPage.nextCursor, // Replace 'nextCursor' with the actual field name from your response
+      }
+    );
 
   const handleClick = async () => {
     await fetchNextPage();
     return;
   };
 
-  if (!data) return <div>kekw</div>;
+  if (!data && (isLoading || isFetching)) return <LoadingPage />;
 
   const allItems = data?.pages?.flatMap((page) => page.items) ?? [];
 
   // if (isLoading) return <LoadingPage size={60} />;
-  // if (isError) return <div>No data found</div>;
+  // if (isError) return <div>No data found</div>;..
+
+  // <button
+  //           // eslint-disable-next-line
+  //           onClick={handleClick}
+  //           className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+  //         ></button>
 
   return (
     <>
@@ -46,14 +66,19 @@ const Home: NextPage = () => {
           {allItems.map((player) => (
             <Player {...player} key={player.id} />
           ))}
+
+          {hasNextPage && !isLoading && !isFetching ? (
+            <button
+              // eslint-disable-next-line
+              onClick={handleClick}
+              className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+            >
+              LOAD MORE
+            </button>
+          ) : (
+            <LoadingPage />
+          )}
         </div>
-        <button
-          // eslint-disable-next-line
-          onClick={handleClick}
-          className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
-        >
-          LOAD MORE
-        </button>
       </main>
     </>
   );
@@ -64,9 +89,12 @@ type Player = RouterOutputs["example"]["getAll"][number];
 
 const Player = (props: Player) => {
   const player = props;
-
+  const positionColorClass = positionColors[player.role] || "gray-400";
   return (
-    <div key={player.id} className="flex gap-3 border-b border-slate-400 p-4">
+    <div
+      key={player.id}
+      className={`flex gap-3 border-b ${positionColorClass} border-slate-400 p-4`}
+    >
       <div className="flex gap-4">
         <div className="flex gap-5 text-slate-300"></div>
         <span className="text-2xl">
