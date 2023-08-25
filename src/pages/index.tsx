@@ -9,7 +9,9 @@ import { useState, useEffect } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
 const Home: NextPage = () => {
-  // const { data, isLoading, isError } = api.example.getAll.useQuery();
+  /*
+    want to implement infinite scrolling instead of just the click thing
+  */
 
   const { data, fetchNextPage } = api.example.infinitePosts.useInfiniteQuery(
     {
@@ -46,6 +48,7 @@ const Home: NextPage = () => {
           ))}
         </div>
         <button
+          // eslint-disable-next-line
           onClick={handleClick}
           className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
         >
