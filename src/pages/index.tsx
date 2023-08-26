@@ -39,6 +39,14 @@ const Home: NextPage = () => {
     want to implement infinite scrolling instead of just the click thing
   */
 
+  // MAKE USE EFFECT POPUP / MODAL TO SET THE STATE FOR HOW MANY TEAMS IN DRAFT THEN MAKE THE ROSTER OBJ
+
+  // const [rosterObj, setRosterObj] = useState({})
+
+  // useEffect(() => {
+
+  // },[])
+
   const { data, fetchNextPage, isLoading, isFetching, hasNextPage } =
     api.player.infinitePosts.useInfiniteQuery(
       {
@@ -63,46 +71,9 @@ const Home: NextPage = () => {
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 text-white">
           <h1>ADP LIST</h1>
+
           <div className="top-16 w-56 text-right">
-            <Menu as="div" className="relative">
-              <div>
-                <Menu.Button className="inline-flex w-full justify-center rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
-                  DEPTH CHARTS
-                </Menu.Button>
-              </div>
-              <Transition
-                as={Fragment}
-                enter="transition ease-out duration-100"
-                enterFrom="transform opacity-0 scale-95"
-                enterTo="transform opacity-100 scale-100"
-                leave="transition ease-in duration-75"
-                leaveFrom="transform opacity-100 scale-100"
-                leaveTo="transform opacity-0 scale-95"
-              >
-                <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                  <div className="px-1 py-1 ">
-                    {teamsArr.map((team) => {
-                      return (
-                        <Menu.Item key={team}>
-                          {({ active }) => (
-                            <Link
-                              href={`/teams/${team}`}
-                              className={`${
-                                active
-                                  ? "bg-violet-500 text-white"
-                                  : "text-gray-900"
-                              } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                            >
-                              {team}
-                            </Link>
-                          )}
-                        </Menu.Item>
-                      );
-                    })}
-                  </div>
-                </Menu.Items>
-              </Transition>
-            </Menu>
+            <DepthMenu menuType={"depth"} arr={teamsArr} />
           </div>
           {allItems.map((player) => (
             <Player {...player} key={player.id} />
@@ -194,6 +165,48 @@ const NavBar = () => {
 
 const Header = () => {
   <div>header</div>;
+};
+
+const DepthMenu = (props: { menuType: string; arr: string[] }) => {
+  return (
+    <Menu as="div" className="relative">
+      <div>
+        <Menu.Button className="inline-flex w-full justify-center rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+          {props.menuType === "depth" ? "DEPTH CHARTS" : "VIEW ROSTERS"}
+        </Menu.Button>
+      </div>
+      <Transition
+        as={Fragment}
+        enter="transition ease-out duration-100"
+        enterFrom="transform opacity-0 scale-95"
+        enterTo="transform opacity-100 scale-100"
+        leave="transition ease-in duration-75"
+        leaveFrom="transform opacity-100 scale-100"
+        leaveTo="transform opacity-0 scale-95"
+      >
+        <Menu.Items className="absolute right-0 mt-2 max-h-60 w-56 origin-top-right divide-y divide-gray-100 overflow-y-auto rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+          <div className="px-1 py-1 ">
+            {props.arr.map((item) => {
+              return (
+                <Menu.Item key={item}>
+                  {({ active }) => (
+                    <Link
+                      href={`/depth/${item}`}
+                      className={`${
+                        active ? "bg-violet-500 text-white" : "text-gray-900"
+                      } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                    >
+                      {item}
+                    </Link>
+                  )}
+                </Menu.Item>
+              );
+            })}
+          </div>
+        </Menu.Items>
+      </Transition>
+    </Menu>
+  );
 };
 
 // could try and add link to fantasy pros but it would take some wrangling in the db

@@ -1,16 +1,16 @@
-import type { GetStaticProps, NextPage } from "next";
+import type { NextPage } from "next";
 import Head from "next/head";
 import { api } from "~/utils/api";
 import { useRouter } from "next/router";
 
-const DepthChartPage: NextPage<{ name: string }> = ({ name }) => {
+const TeamRosterPage: NextPage<{ team: string }> = ({ team }) => {
   const router = useRouter();
   return (
     <>
       <Head>
-        <title>{`${name} Depth Chart`}</title>
+        <title>{`${router.query.slug?.toString()} Current Roster`}</title>
       </Head>
-      <div>{router.query.slug}</div>
+      <div>Team {router.query.slug}</div>
     </>
   );
 };
@@ -36,4 +36,4 @@ const DepthChartPage: NextPage<{ name: string }> = ({ name }) => {
 //   return { paths: [], fallback: "blocking" };
 // };
 
-export default DepthChartPage;
+export default TeamRosterPage;
