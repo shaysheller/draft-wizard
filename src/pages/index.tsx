@@ -30,11 +30,10 @@ const Home: NextPage = () => {
   return (
     <>
       <PageLayout>
-        <Modal />
+        {state.NumTeams === -1 && state.PickNumber === -1 && <Modal />}
+        {/* could add a toaster thing to alert the user that they have successfully submitted */}
         <div className=" my-6 flex flex-col items-center justify-center">
-          <h1 className="text-black">
-            ADP LIST NUM TEAMS {state.NumTeams} PICK NUMBER {state.PickNumber}
-          </h1>
+          <h1 className="text-black">ADP LIST</h1>
 
           <DropDownMenu title={"DEPTH CHARTS"} arr={teamsArr} top={16} />
         </div>
@@ -105,7 +104,19 @@ const Modal = () => {
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // might only be necessary for mobile? I was able to type letters in this field on my ipad
+    const a = Number(numTeamsRef.current?.value);
+    const b = Number(pickNumberRef.current?.value);
+    if (isNaN(a) || isNaN(b)) {
+      if (isNaN(a)) numTeamsRef.current?.focus();
+      if (isNaN(b)) pickNumberRef.current?.focus();
+      return;
+    }
 
+    if (b > a) {
+      alert("Pick # cannot be larger than # of teams - Please re-enter");
+      return;
+    }
     dispatch(numTeamsFunction(Number(numTeamsRef.current?.value)));
     dispatch(draftPickFunction(Number(pickNumberRef.current?.value)));
   };
