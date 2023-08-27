@@ -10,6 +10,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import teamsArr from "~/utils/teams";
 import { positionColors } from "~/utils/positionColors";
 import { DropDownMenu } from "~/components/dropDown";
+import { createPortal } from "react-dom";
 
 const Home: NextPage = () => {
   const { data, fetchNextPage, isLoading, isFetching, hasNextPage } =
@@ -29,7 +30,7 @@ const Home: NextPage = () => {
   return (
     <>
       <PageLayout>
-        <div className="flex h-60 flex-col items-center justify-center">
+        <div className=" my-6 flex flex-col items-center justify-center">
           <h1 className="text-black">ADP LIST</h1>
 
           <DropDownMenu title={"DEPTH CHARTS"} arr={teamsArr} top={16} />
@@ -94,39 +95,8 @@ const Player = (props: Player) => {
   );
 };
 
-const NavBar = () => {
-  return (
-    <>
-      <li>
-        <Link href="/" className="hover:text-sky-500 dark:hover:text-sky-400">
-          Home
-        </Link>
-      </li>
-
-      {/* <li>
-        <Link href="/teams" className="hover:text-sky-500 dark:hover:text-sky-400">
-          Blog
-        </Link>
-      </li> */}
-      {/* <li>
-        <Link href="/depth-charts" className="hover:text-sky-500 dark:hover:text-sky-400">
-          Showcase
-        </Link>
-      </li> */}
-      <li>
-        <Link
-          href="/teams/tester"
-          className="hover:text-sky-500 dark:hover:text-sky-400"
-        >
-          Test
-        </Link>
-      </li>
-    </>
-  );
-};
-
-const Header = () => {
-  <div>header</div>;
+const Modal = () => {
+  return createPortal(<div>kekw</div>, document.body);
 };
 
 export default Home;
@@ -187,3 +157,34 @@ export default Home;
 
 // could try and add link to fantasy pros but it would take some wrangling in the db
 // might need to separate first and last names into their own field - it still wont work perfectly for mfs with weird names though
+
+// const NavBar = () => {
+//   return (
+//     <>
+//       <li>
+//         <Link href="/" className="hover:text-sky-500 dark:hover:text-sky-400">
+//           Home
+//         </Link>
+//       </li>
+
+//       {/* <li>
+//         <Link href="/teams" className="hover:text-sky-500 dark:hover:text-sky-400">
+//           Blog
+//         </Link>
+//       </li> */}
+//       {/* <li>
+//         <Link href="/depth-charts" className="hover:text-sky-500 dark:hover:text-sky-400">
+//           Showcase
+//         </Link>
+//       </li> */}
+//       <li>
+//         <Link
+//           href="/teams/tester"
+//           className="hover:text-sky-500 dark:hover:text-sky-400"
+//         >
+//           Test
+//         </Link>
+//       </li>
+//     </>
+//   );
+// };
