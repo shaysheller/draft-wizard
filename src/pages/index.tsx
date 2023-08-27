@@ -1,28 +1,17 @@
-import Head from "next/head";
-import Link from "next/link";
 import { api } from "~/utils/api";
 import { type NextPage } from "next";
 import { LoadingPage } from "~/components/loading";
 import { type RouterOutputs } from "~/utils/api";
 import { PageLayout } from "~/components/layout";
-import { useState, useEffect } from "react";
-import { useInfiniteQuery } from "@tanstack/react-query";
 import teamsArr from "~/utils/teams";
 import { positionColors } from "~/utils/positionColors";
 import { DropDownMenu } from "~/components/dropDown";
 import { createPortal } from "react-dom";
 import { useContext, useRef } from "react";
-import {
-  DraftContext,
-  numTeamsFunction,
-  draftPickFunction,
-  DraftSettings,
-} from "./context";
+import { DraftContext, numTeamsFunction, draftPickFunction } from "../context";
 
 const Home: NextPage = () => {
-  const [numTeams, setNumTeams] = useState<number>();
-  const [pickNumber, setPickNumber] = useState<number>();
-  const { state, dispatch } = useContext(DraftContext);
+  const { state } = useContext(DraftContext);
 
   const { data, fetchNextPage, isLoading, isFetching, hasNextPage } =
     api.player.infinitePosts.useInfiniteQuery(

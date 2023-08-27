@@ -1,9 +1,8 @@
-import type { GetStaticProps, NextPage } from "next";
+import type { NextPage } from "next";
 import Head from "next/head";
-import { api } from "~/utils/api";
 import { useRouter } from "next/router";
 
-const DepthChartPage: NextPage<{ name: string }> = ({ name }) => {
+const DepthChartPage: NextPage<{ name: string }> = () => {
   const router = useRouter();
   return (
     <>

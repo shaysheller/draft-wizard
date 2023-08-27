@@ -2,8 +2,8 @@ import { type AppType } from "next/app";
 import { api } from "~/utils/api";
 import "~/styles/globals.css";
 import Head from "next/head";
-import { draftReducer } from "./reducers";
-import { DraftContext, initialState } from "./context";
+import { draftReducer } from "../reducers";
+import { DraftContext, initialState } from "../context";
 import { useReducer } from "react";
 
 const MyApp: AppType = ({ Component, pageProps }) => {

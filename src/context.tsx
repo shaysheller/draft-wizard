@@ -1,5 +1,4 @@
-import { createContext, type Dispatch } from "react";
-import { draftReducer } from "./reducers";
+import { createContext } from "react";
 
 export type InitialStateType = {
   NumTeams: number;

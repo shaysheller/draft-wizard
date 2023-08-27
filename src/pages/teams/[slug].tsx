@@ -1,9 +1,8 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import { api } from "~/utils/api";
 import { useRouter } from "next/router";
 
-const TeamRosterPage: NextPage<{ team: string }> = ({ team }) => {
+const TeamRosterPage: NextPage<{ team: string }> = () => {
   const router = useRouter();
   return (
     <>
