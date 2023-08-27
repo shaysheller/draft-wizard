@@ -29,11 +29,10 @@ const Home: NextPage = () => {
   return (
     <>
       <PageLayout>
-        {/* <div className=" flex flex-col items-center justify-center gap-12 overflow-hidden px-4 py-16 text-white"> */}
         <div className="flex h-60 flex-col items-center justify-center">
           <h1 className="text-black">ADP LIST</h1>
 
-          <DropDownMenu menuType={"depth"} arr={teamsArr} top={16} width={56} />
+          <DropDownMenu title={"DEPTH CHARTS"} arr={teamsArr} top={16} />
         </div>
 
         <div className="flex w-full flex-col gap-4 overflow-y-auto">
@@ -51,7 +50,6 @@ const Home: NextPage = () => {
             <LoadingPage />
           )}
         </div>
-        {/* </div> */}
       </PageLayout>
     </>
   );

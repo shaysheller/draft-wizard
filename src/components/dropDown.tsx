@@ -1,21 +1,23 @@
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import Link from "next/link";
+import { ChevronDownIcon } from "@heroicons/react/20/solid";
 
 export const DropDownMenu = (props: {
-  menuType: string;
+  title: string;
   arr: string[];
   top: number;
-  width: number;
 }) => {
   return (
-    <div className={`top-${props.top} w-${props.width}`}>
-      <Menu as="div">
-        <div>
-          <Menu.Button className="inline-flex w-full justify-center rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
-            {props.menuType === "depth" ? "DEPTH CHARTS" : "VIEW ROSTERS"}
-          </Menu.Button>
-        </div>
+    <div className={`top-${props.top}`}>
+      <Menu as="div" className="relative inline-block text-left">
+        <Menu.Button className="inline-flex  rounded-md bg-black bg-opacity-20 px-2 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+          <span>{props.title}</span>
+          <ChevronDownIcon
+            className="h-5 w-5 text-violet-400 hover:text-violet-100"
+            aria-hidden="true"
+          />
+        </Menu.Button>
         <Transition
           as={Fragment}
           enter="transition ease-out duration-100"
@@ -25,7 +27,7 @@ export const DropDownMenu = (props: {
           leaveFrom="transform opacity-100 scale-100"
           leaveTo="transform opacity-0 scale-95"
         >
-          <Menu.Items className="absolute right-0 mt-2 max-h-60 w-56 origin-top-right divide-y divide-gray-100 overflow-y-auto rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+          <Menu.Items className="absolute right-0 mt-2 h-48 w-fit origin-top-right divide-y divide-gray-100 overflow-y-auto rounded-md bg-white pr-2 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
             <div className="px-1 py-1 ">
               {props.arr.map((item) => {
                 return (
