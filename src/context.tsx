@@ -3,7 +3,6 @@ import { playerRouter } from "./server/api/routers/player";
 import { type RouterOutputs } from "./utils/api";
 
 export type InitialStateType = {
-  NumTeams: number;
   PickNumber: number;
   Rosters: Record<number, Teams>;
   PickedPlayers: Set<string>;
@@ -21,7 +20,6 @@ export interface Teams {
 
 export type Player = RouterOutputs["player"]["getAll"][number];
 export const initialState: InitialStateType = {
-  NumTeams: -1,
   PickNumber: -1,
   Rosters: {},
   PickedPlayers: new Set<string>(),

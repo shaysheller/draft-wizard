@@ -8,8 +8,10 @@ export function draftReducer(
 ): InitialStateType {
   switch (action.type) {
     case ActionType.changeNumTeams:
+      console.log("kekw");
       const obj: Record<number, Teams> = {};
-      for (let i = 1; i <= state.NumTeams; i++) {
+      console.log(action.payload);
+      for (let i = 1; i <= action.payload; i++) {
         obj[i] = {
           QB: [],
           WR: [],
@@ -19,7 +21,7 @@ export function draftReducer(
           K: [],
         };
       }
-      return { ...state, NumTeams: action.payload, Rosters: obj };
+      return { ...state, Rosters: obj };
     case ActionType.changePickNumber:
       return { ...state, PickNumber: action.payload };
     case ActionType.updateTeamRoster:

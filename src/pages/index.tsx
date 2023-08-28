@@ -34,6 +34,8 @@ interface Teams {
   K: Player[];
 }
 
+// TODO: refactor reducer to set draft object by itself
+
 const Home: NextPage = () => {
   const { state, dispatch } = useContext(DraftContext);
   const [currentPick, setCurrentPick] = useState(1);
@@ -43,7 +45,7 @@ const Home: NextPage = () => {
   // THIS CAN BE REMOVED IT'S SO I CAN BYPASS NEEDING TO SET TEAMS/PICK EVERY TIME I REFRESH
   useEffect(() => {
     const please = () => {
-      if (state.NumTeams === -1) {
+      if (state.PickNumber === -1) {
         dispatch(numTeamsFunction(12));
         dispatch(draftPickFunction(9));
       }
@@ -76,7 +78,7 @@ const Home: NextPage = () => {
   return (
     <>
       <PageLayout>
-        {state.NumTeams === -1 && state.PickNumber === -1 && <Modal />}
+        {state.PickNumber === -1 && <Modal />}
         {/* could add a toaster thing to alert the user that they have successfully submitted */}
         <div className=" my-6 flex h-fit flex-col items-center justify-center">
           <h1 className="text-black">ADP LIST</h1>
