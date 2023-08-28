@@ -40,11 +40,14 @@ const Home: NextPage = () => {
 
   // THIS CAN BE REMOVED IT'S SO I CAN BYPASS NEEDING TO SET TEAMS/PICK EVERY TIME I REFRESH
   useEffect(() => {
-    if (state.NumTeams === -1) {
-      dispatch(numTeamsFunction(10));
-      dispatch(draftPickFunction(9));
-    }
-  }, [dispatch, state.NumTeams]);
+    const please = () => {
+      if (state.NumTeams === -1) {
+        dispatch(numTeamsFunction(12));
+        dispatch(draftPickFunction(9));
+      }
+    };
+    please();
+  }, []);
 
   // might need to tinker with the refecth mechanics because it refetches every time i click back on to the page
   const { data, fetchNextPage, isLoading, isFetching, hasNextPage } =
@@ -65,6 +68,7 @@ const Home: NextPage = () => {
   // checking the set
 
   const handlePlayerDraft = (player: Player) => {
+    console.log("running");
     dispatch(draftPlayerFunction(currentPick, player));
   };
 

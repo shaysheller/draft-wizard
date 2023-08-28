@@ -38,7 +38,6 @@ export function draftReducer(
           K: [],
         };
       }
-      console.log(Math.random());
       newDraftObj[pickNumber]?.[player.role].push(player); // typescript is not great at handling nested objects
       newDraftObj[pickNumber]?.[player.role].sort((a, b) => a.adp - b.adp);
 
