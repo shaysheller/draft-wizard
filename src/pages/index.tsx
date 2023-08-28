@@ -68,7 +68,6 @@ const Home: NextPage = () => {
   // checking the set
 
   const handlePlayerDraft = (player: Player) => {
-    console.log("running");
     dispatch(draftPlayerFunction(currentPick, player));
   };
 

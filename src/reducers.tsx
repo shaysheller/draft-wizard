@@ -25,8 +25,8 @@ export function draftReducer(
     case ActionType.updateTeamRoster:
       const newDraftObj = { ...state.Rosters };
       const { pickNumber, player } = action.payload;
-      const set = state.PickedPlayers;
-      set.add(player.name);
+
+      state.PickedPlayers.add(player.name);
 
       if (!newDraftObj[pickNumber]) {
         newDraftObj[pickNumber] = {
@@ -41,7 +41,11 @@ export function draftReducer(
       newDraftObj[pickNumber]?.[player.role].push(player); // typescript is not great at handling nested objects
       newDraftObj[pickNumber]?.[player.role].sort((a, b) => a.adp - b.adp);
 
-      return { ...state, Rosters: { ...newDraftObj } };
+      return {
+        ...state,
+        PickedPlayers: new Set(state.PickedPlayers),
+        Rosters: { ...newDraftObj },
+      };
 
     default:
       return state;
