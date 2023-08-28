@@ -1,15 +1,39 @@
 import { createContext } from "react";
+import { playerRouter } from "./server/api/routers/player";
+import { type RouterOutputs } from "./utils/api";
 
 export type InitialStateType = {
   NumTeams: number;
   PickNumber: number;
+  Rosters: Record<number, Teams>;
+  PickedPlayers: Set<string>;
+  NumberOfRounds: number;
 };
 
-export const initialState: InitialStateType = { NumTeams: -1, PickNumber: -1 };
+export interface Teams {
+  QB: Player[];
+  WR: Player[];
+  RB: Player[];
+  TE: Player[];
+  DST: Player[];
+  K: Player[];
+}
+
+export type Player = RouterOutputs["player"]["getAll"][number];
+export const initialState: InitialStateType = {
+  NumTeams: -1,
+  PickNumber: -1,
+  Rosters: {},
+  PickedPlayers: new Set<string>(),
+  NumberOfRounds: 15,
+};
 
 export enum ActionType {
   changeNumTeams,
   changePickNumber,
+  updateTeamRoster,
+  updatePickedPlayers,
+  updateNumOfRounds,
 }
 
 export interface changeNumTeams {
@@ -22,7 +46,21 @@ export interface changePickNumber {
   payload: number;
 }
 
-export type DraftSettings = changeNumTeams | changePickNumber;
+export interface draftPlayer {
+  type: ActionType.updateTeamRoster;
+  payload: { pickNumber: number; player: Player };
+}
+
+export interface updateNumOfRounds {
+  type: ActionType.updateNumOfRounds;
+  payload: number;
+}
+
+export type DraftSettings =
+  | changeNumTeams
+  | changePickNumber
+  | draftPlayer
+  | updateNumOfRounds;
 
 export const DraftContext = createContext<{
   state: InitialStateType;
@@ -40,4 +78,17 @@ export const numTeamsFunction = (numTeams: number): changeNumTeams => ({
 export const draftPickFunction = (pickNumber: number): changePickNumber => ({
   type: ActionType.changePickNumber,
   payload: pickNumber,
+});
+
+export const numOfRoundsFunction = (rounds: number): updateNumOfRounds => ({
+  type: ActionType.updateNumOfRounds,
+  payload: rounds,
+});
+
+export const draftPlayerFunction = (
+  pickNumber: number,
+  player: Player
+): draftPlayer => ({
+  type: ActionType.updateTeamRoster,
+  payload: { pickNumber, player },
 });

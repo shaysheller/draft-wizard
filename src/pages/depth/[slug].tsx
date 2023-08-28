@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 
 const DepthChartPage: NextPage<{ name: string }> = () => {
   const router = useRouter();
+
   return (
     <>
       <Head>

@@ -7,8 +7,14 @@ import teamsArr from "~/utils/teams";
 import { positionColors } from "~/utils/positionColors";
 import { DropDownMenu } from "~/components/dropDown";
 import { createPortal } from "react-dom";
-import { useContext, useRef, useState, useMemo } from "react";
-import { DraftContext, numTeamsFunction, draftPickFunction } from "../context";
+import { useContext, useRef, useState, useMemo, useEffect } from "react";
+import {
+  DraftContext,
+  numTeamsFunction,
+  draftPickFunction,
+  draftPlayerFunction,
+  numOfRoundsFunction,
+} from "../context";
 
 /*
   keep array of everyone that has been drafted I think just in case I want to undo in the future
@@ -28,15 +34,17 @@ interface Teams {
   K: Player[];
 }
 
-const initialTeamData: Record<number, Teams> = {};
-
 const Home: NextPage = () => {
-  console.log("rendering");
-  const { state } = useContext(DraftContext);
-  const [draftObj, setDraftObj] = useState(initialTeamData);
+  const { state, dispatch } = useContext(DraftContext);
   const [currentPick, setCurrentPick] = useState(1);
-  const [pickedPlayerSet, setPickedPlayerSet] = useState(new Set());
-  console.log(pickedPlayerSet);
+
+  // THIS CAN BE REMOVED IT'S SO I CAN BYPASS NEEDING TO SET TEAMS/PICK EVERY TIME I REFRESH
+  useEffect(() => {
+    if (state.NumTeams === -1) {
+      dispatch(numTeamsFunction(10));
+      dispatch(draftPickFunction(9));
+    }
+  }, [dispatch, state.NumTeams]);
 
   // might need to tinker with the refecth mechanics because it refetches every time i click back on to the page
   const { data, fetchNextPage, isLoading, isFetching, hasNextPage } =
@@ -57,55 +65,37 @@ const Home: NextPage = () => {
   // checking the set
 
   const handlePlayerDraft = (player: Player) => {
-    setDraftObj((prevDraftObj) => {
-      const newDraftObj = { ...prevDraftObj };
-
-      if (!newDraftObj[currentPick]) {
-        newDraftObj[currentPick] = {
-          QB: [],
-          WR: [],
-          TE: [],
-          RB: [],
-          DST: [],
-          K: [],
-        };
-      }
-
-      newDraftObj[currentPick]?.[player.role].push(player); // typescript is not great at handling nested objects
-      pickedPlayerSet.add(player.name);
-
-      return newDraftObj;
-    });
-
-    setPickedPlayerSet((prevPickedPlayers) => {
-      const newPickedPlayers = new Set(prevPickedPlayers);
-      newPickedPlayers.add(player.name);
-      return newPickedPlayers;
-    });
+    dispatch(draftPlayerFunction(currentPick, player));
   };
-
-  // {
-  //   1: WHOLE ROSTER,
-  //   2: WHOLE ROSTER,
-  //   3: WHOLE ROSTER
-  // }
 
   return (
     <>
       <PageLayout>
-        {/* {state.NumTeams === -1 && state.PickNumber === -1 && <Modal />} */}
+        {state.NumTeams === -1 && state.PickNumber === -1 && <Modal />}
         {/* could add a toaster thing to alert the user that they have successfully submitted */}
         <div className=" my-6 flex h-fit flex-col items-center justify-center">
           <h1 className="text-black">ADP LIST</h1>
-
-          <DropDownMenu title={"DEPTH CHARTS"} arr={teamsArr} top={16} />
+          <div className="flex">
+            <DropDownMenu
+              title={"DEPTH CHARTS"}
+              urlParam={"depth"}
+              arr={teamsArr}
+            />
+            <DropDownMenu
+              title={"VIEW ROSTERS"}
+              urlParam={"roster"}
+              arr={Object.keys(state.Rosters)}
+            />
+          </div>
         </div>
 
         <div className="flex h-full w-full flex-col gap-4 overflow-y-auto">
           <PlayerFeed
             playerArr={
               data?.pages?.flatMap((page) =>
-                page.items.filter((player) => !pickedPlayerSet.has(player.name))
+                page.items.filter(
+                  (player) => !state.PickedPlayers.has(player.name)
+                )
               ) ?? []
             }
             handlePlayerDraft={handlePlayerDraft}
@@ -183,6 +173,7 @@ const Modal = () => {
   const { dispatch } = useContext(DraftContext);
   const numTeamsRef = useRef<HTMLInputElement>(null);
   const pickNumberRef = useRef<HTMLInputElement>(null);
+  const draftRoundsRef = useRef<HTMLInputElement>(null);
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -201,6 +192,7 @@ const Modal = () => {
     }
     dispatch(numTeamsFunction(Number(numTeamsRef.current?.value)));
     dispatch(draftPickFunction(Number(pickNumberRef.current?.value)));
+    dispatch(numOfRoundsFunction(Number(draftRoundsRef.current?.value)));
   };
 
   return createPortal(
@@ -244,6 +236,21 @@ const Modal = () => {
               ref={pickNumberRef}
             ></input>
           </div>
+          <label
+            className="mb-2 block text-sm font-bold text-gray-700"
+            htmlFor="teams"
+          >
+            How many rounds?
+          </label>
+          <input
+            className="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none"
+            id="teams"
+            type="number"
+            required
+            min={1}
+            max={20}
+            ref={draftRoundsRef}
+          ></input>
           <div className="h-4"></div>
           <button
             className="focus:shadow-outline w-full rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700 focus:outline-none"
@@ -259,12 +266,6 @@ const Modal = () => {
 };
 
 export default Home;
-
-/*
-  USEROUTER ROUTER.BACK NEXTJS TO CLOSE MODAL??? (GO BACK IN HISTORY BASICALLY)
-
-
-*/
 
 /* 
   does it make sense to getserversideprops to fetch the teams? 
