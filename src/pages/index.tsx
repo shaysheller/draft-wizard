@@ -7,12 +7,38 @@ import teamsArr from "~/utils/teams";
 import { positionColors } from "~/utils/positionColors";
 import { DropDownMenu } from "~/components/dropDown";
 import { createPortal } from "react-dom";
-import { useContext, useRef } from "react";
+import { useContext, useRef, useState, useMemo } from "react";
 import { DraftContext, numTeamsFunction, draftPickFunction } from "../context";
 
-const Home: NextPage = () => {
-  const { state } = useContext(DraftContext);
+/*
+  keep array of everyone that has been drafted I think just in case I want to undo in the future
+  keep track of who's pick it is
+  I think it will be best to have one object of objects in index and then pass the object that is needed into each page
+  will probably want to use memo this 
+*/
 
+type Player = RouterOutputs["player"]["getAll"][number];
+
+interface Teams {
+  QB: Player[];
+  WR: Player[];
+  RB: Player[];
+  TE: Player[];
+  DST: Player[];
+  K: Player[];
+}
+
+const initialTeamData: Record<number, Teams> = {};
+
+const Home: NextPage = () => {
+  console.log("rendering");
+  const { state } = useContext(DraftContext);
+  const [draftObj, setDraftObj] = useState(initialTeamData);
+  const [currentPick, setCurrentPick] = useState(1);
+  const [pickedPlayerSet, setPickedPlayerSet] = useState(new Set());
+  console.log(pickedPlayerSet);
+
+  // might need to tinker with the refecth mechanics because it refetches every time i click back on to the page
   const { data, fetchNextPage, isLoading, isFetching, hasNextPage } =
     api.player.infinitePosts.useInfiniteQuery(
       {
@@ -25,21 +51,65 @@ const Home: NextPage = () => {
 
   if (!data && (isLoading || isFetching)) return <LoadingPage />;
 
-  const allItems = data?.pages?.flatMap((page) => page.items) ?? [];
+  // probably need to usememo this it gets wiped every time the page refreshes
+  // add drafted players to a set possibly with their pick number and then we won't need to derive shit
+  // we can just create an array from the data that comes back and filter the players that have already been picked by
+  // checking the set
+
+  const handlePlayerDraft = (player: Player) => {
+    setDraftObj((prevDraftObj) => {
+      const newDraftObj = { ...prevDraftObj };
+
+      if (!newDraftObj[currentPick]) {
+        newDraftObj[currentPick] = {
+          QB: [],
+          WR: [],
+          TE: [],
+          RB: [],
+          DST: [],
+          K: [],
+        };
+      }
+
+      newDraftObj[currentPick]?.[player.role].push(player); // typescript is not great at handling nested objects
+      pickedPlayerSet.add(player.name);
+
+      return newDraftObj;
+    });
+
+    setPickedPlayerSet((prevPickedPlayers) => {
+      const newPickedPlayers = new Set(prevPickedPlayers);
+      newPickedPlayers.add(player.name);
+      return newPickedPlayers;
+    });
+  };
+
+  // {
+  //   1: WHOLE ROSTER,
+  //   2: WHOLE ROSTER,
+  //   3: WHOLE ROSTER
+  // }
 
   return (
     <>
       <PageLayout>
-        {state.NumTeams === -1 && state.PickNumber === -1 && <Modal />}
+        {/* {state.NumTeams === -1 && state.PickNumber === -1 && <Modal />} */}
         {/* could add a toaster thing to alert the user that they have successfully submitted */}
-        <div className=" my-6 flex flex-col items-center justify-center">
+        <div className=" my-6 flex h-fit flex-col items-center justify-center">
           <h1 className="text-black">ADP LIST</h1>
 
           <DropDownMenu title={"DEPTH CHARTS"} arr={teamsArr} top={16} />
         </div>
 
-        <div className="flex w-full flex-col gap-4 overflow-y-auto">
-          <PlayerFeed playerArr={allItems} />
+        <div className="flex h-full w-full flex-col gap-4 overflow-y-auto">
+          <PlayerFeed
+            playerArr={
+              data?.pages?.flatMap((page) =>
+                page.items.filter((player) => !pickedPlayerSet.has(player.name))
+              ) ?? []
+            }
+            handlePlayerDraft={handlePlayerDraft}
+          />
 
           {hasNextPage && !isLoading && !isFetching ? (
             <button
@@ -58,22 +128,31 @@ const Home: NextPage = () => {
   );
 };
 
-const PlayerFeed = (props: { playerArr: Player[] }) => {
+const PlayerFeed = (props: {
+  playerArr: Player[];
+  handlePlayerDraft: (player: Player) => void;
+}) => {
   const { playerArr } = props;
   return (
     <>
       {playerArr.map((player) => (
-        <Player {...player} key={player.id} />
+        <Player
+          player={player}
+          key={player.id}
+          handlePlayerDraft={props.handlePlayerDraft}
+        />
       ))}
     </>
   );
 };
 
 // infers the return type from example router with getall call and that returns an array so we will insert a number to get the individual player
-type Player = RouterOutputs["player"]["getAll"][number];
 
-const Player = (props: Player) => {
-  const player = props;
+const Player = (props: {
+  player: Player;
+  handlePlayerDraft: (player: Player) => void;
+}) => {
+  const { player, handlePlayerDraft } = props;
   const positionColorClass = positionColors[player.role] || "gray-400";
   return (
     <div
@@ -89,7 +168,10 @@ const Player = (props: Player) => {
         <span className="text-2xl">Team: {player.team}</span>
         <span className="text-2xl">Bye: {player.bye}</span>
         <span className="text-2xl">ADP: {player.adp}</span>
-        <button className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700">
+        <button
+          onClick={() => handlePlayerDraft(player)}
+          className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+        >
           Draft
         </button>
       </div>
@@ -97,6 +179,7 @@ const Player = (props: Player) => {
   );
 };
 
+// could make the wrapping of the modal more reusable and the internal contents more specific but idk if that is worth rn
 const Modal = () => {
   const { dispatch } = useContext(DraftContext);
   const numTeamsRef = useRef<HTMLInputElement>(null);

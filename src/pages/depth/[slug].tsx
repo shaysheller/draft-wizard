@@ -36,3 +36,42 @@ const DepthChartPage: NextPage<{ name: string }> = () => {
 // };
 
 export default DepthChartPage;
+
+/*
+  Need a way to keep track of all players this person has drafted
+
+  obviously best to store in an object
+  {
+    QB: []
+    WR: []
+    RB: []
+    TE: []
+    K: []
+    DST: []
+  }
+
+  Fill out roster slots ->
+
+  QB
+  WR
+  WR
+  RB
+  RB
+  FLX
+  TE
+  DST
+  K
+
+
+  (num of bench slots will depend on how many rounds we want to have in draft)
+  BN
+  BN
+  BN
+  BN
+  BN
+
+
+  could store this all in global, but I Don't really think that makes sense because only this page should be keeping track of who has who 
+
+
+*/
