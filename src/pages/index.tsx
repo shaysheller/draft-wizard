@@ -38,6 +38,8 @@ const Home: NextPage = () => {
   const { state, dispatch } = useContext(DraftContext);
   const [currentPick, setCurrentPick] = useState(1);
 
+  console.log(state.PickedPlayers);
+
   // THIS CAN BE REMOVED IT'S SO I CAN BYPASS NEEDING TO SET TEAMS/PICK EVERY TIME I REFRESH
   useEffect(() => {
     const please = () => {
