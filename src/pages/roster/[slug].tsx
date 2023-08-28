@@ -36,56 +36,56 @@ const TeamRosterPage: NextPage<{ team: string }> = () => {
             <th scope="row">QB</th>
             <td>1976</td>
             <td>9</td>
-            <td>Ever fallen in love (with someone you shouldn't've)</td>
+            <td>Ever fallen in love (with someone you)</td>
           </tr>
           <tr>
             <th scope="row">WR1</th>
             <td>1976</td>
             <td>9</td>
-            <td>Ever fallen in love (with someone you shouldn't've)</td>
+            <td>Ever fallen in love (with someone yo)</td>
           </tr>
           <tr>
             <th scope="row">WR2</th>
             <td>1976</td>
             <td>9</td>
-            <td>Ever fallen in love (with someone you shouldn't've)</td>
+            <td>Ever fallen in love (with someone you)</td>
           </tr>
           <tr>
             <th scope="row">RB1</th>
             <td>1976</td>
             <td>9</td>
-            <td>Ever fallen in love (with someone you shouldn't've)</td>
+            <td>Ever fallen in love (with someone you )</td>
           </tr>
           <tr>
             <th scope="row">RB2</th>
             <td>1976</td>
             <td>9</td>
-            <td>Ever fallen in love (with someone you shouldn't've)</td>
+            <td>Ever fallen in love (with someone you)</td>
           </tr>
           <tr>
             <th scope="row">TE</th>
             <td>1976</td>
             <td>9</td>
-            <td>Ever fallen in love (with someone you shouldn't've)</td>
+            <td>Ever fallen in love (with someone you )</td>
           </tr>
           <tr>
             <th scope="row">WR/RB</th>
             <td>1976</td>
             <td>9</td>
-            <td>Ever fallen in love (with someone you shouldn't've)</td>
+            <td>Ever fallen in love (with someone you e)</td>
           </tr>
 
           <tr>
             <th scope="row">K</th>
             <td>1976</td>
             <td>9</td>
-            <td>Ever fallen in love (with someone you shouldn't've)</td>
+            <td>Ever fallen in love (with someone youe)</td>
           </tr>
           <tr>
             <th scope="row">DST</th>
             <td>1976</td>
             <td>9</td>
-            <td>Ever fallen in love (with someone you shouldn't've)</td>
+            <td>Ever fallen in love (with someone you )</td>
           </tr>
         </tbody>
       </table>
