@@ -40,8 +40,6 @@ const Home: NextPage = () => {
   const { state, dispatch } = useContext(DraftContext);
   const [currentPick, setCurrentPick] = useState(1);
 
-  console.log(state.PickedPlayers);
-
   // THIS CAN BE REMOVED IT'S SO I CAN BYPASS NEEDING TO SET TEAMS/PICK EVERY TIME I REFRESH
   useEffect(() => {
     const please = () => {
@@ -51,7 +49,7 @@ const Home: NextPage = () => {
       }
     };
     please();
-  }, []);
+  }, [dispatch, state.PickNumber]);
 
   // might need to tinker with the refecth mechanics because it refetches every time i click back on to the page
   const { data, fetchNextPage, isLoading, isFetching, hasNextPage } =
@@ -165,7 +163,7 @@ const Player = (props: {
         <span className="text-2xl">Bye: {player.bye}</span>
         <span className="text-2xl">ADP: {player.adp}</span>
         <button
-          onClick={() => handlePlayerDraft(player)}
+          onClick={(e) => handlePlayerDraft(player)}
           className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
         >
           Draft

@@ -1,6 +1,7 @@
 import type { DraftSettings, InitialStateType } from "./context";
 import { ActionType } from "./context";
 import { type Teams } from "./context";
+import { cloneDeep } from "lodash";
 
 export function draftReducer(
   state: InitialStateType,
@@ -8,9 +9,7 @@ export function draftReducer(
 ): InitialStateType {
   switch (action.type) {
     case ActionType.changeNumTeams:
-      console.log("kekw");
       const obj: Record<number, Teams> = {};
-      console.log(action.payload);
       for (let i = 1; i <= action.payload; i++) {
         obj[i] = {
           QB: [],
@@ -25,7 +24,7 @@ export function draftReducer(
     case ActionType.changePickNumber:
       return { ...state, PickNumber: action.payload };
     case ActionType.updateTeamRoster:
-      const newDraftObj = { ...state.Rosters };
+      const newDraftObj = cloneDeep(state.Rosters);
       const { pickNumber, player } = action.payload;
 
       state.PickedPlayers.add(player.name);
@@ -46,7 +45,7 @@ export function draftReducer(
       return {
         ...state,
         PickedPlayers: new Set(state.PickedPlayers),
-        Rosters: { ...newDraftObj },
+        Rosters: { ...newDraftObj }, //PROBABLY FUCKED BECAUSE THE OBJECT IS NESTED FUCK JS
       };
 
     default:
