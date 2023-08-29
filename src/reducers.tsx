@@ -48,6 +48,9 @@ export function draftReducer(
         Rosters: { ...newDraftObj },
       };
 
+    case ActionType.updatePick:
+      return { ...state, Pick: state.Pick + 1 };
+
     default:
       return state;
   }

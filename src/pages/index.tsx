@@ -16,12 +16,11 @@ import {
   numOfRoundsFunction,
 } from "../context";
 
-/*
-  keep array of everyone that has been drafted I think just in case I want to undo in the future
-  keep track of who's pick it is
-  I think it will be best to have one object of objects in index and then pass the object that is needed into each page
-  will probably want to use memo this 
-*/
+// TODO: make pick order work and update the draftpick function to add the player to the correct index in the object
+// TODO: consider making forward ref work so i can just ref the button instead of prop drilling when i draft a player
+// TODO: filter by position but keep order
+// TODO: want to implement infinite scrolling instead of just the click thing
+// TODO: depth charts
 
 type Player = RouterOutputs["player"]["getAll"][number];
 
@@ -33,8 +32,6 @@ interface Teams {
   DST: Player[];
   K: Player[];
 }
-
-// TODO: refactor reducer to set draft object by itself
 
 const Home: NextPage = () => {
   const { state, dispatch } = useContext(DraftContext);
@@ -63,11 +60,6 @@ const Home: NextPage = () => {
     );
 
   if (!data && (isLoading || isFetching)) return <LoadingPage />;
-
-  // probably need to usememo this it gets wiped every time the page refreshes
-  // add drafted players to a set possibly with their pick number and then we won't need to derive shit
-  // we can just create an array from the data that comes back and filter the players that have already been picked by
-  // checking the set
 
   const handlePlayerDraft = (player: Player) => {
     dispatch(draftPlayerFunction(currentPick, player));
@@ -139,8 +131,6 @@ const PlayerFeed = (props: {
     </>
   );
 };
-
-// infers the return type from example router with getall call and that returns an array so we will insert a number to get the individual player
 
 const Player = (props: {
   player: Player;
@@ -284,78 +274,3 @@ export default Home;
 
 
 */
-
-/*
-  1. select number of teams
-  2. select your draft pick *sort of optional*
-  3. store the teams somewhere - possibly in state possibly in LM 
-  4. somehow navigate between pages - possibly a drop down idk
-  5. need to remove players when we hit the draft button but not lose them entirely 
-*/
-
-/*
-  layout
-
-
-*/
-
-/*
-  1. filter by position but keep order
-
-
-*/
-
-/*
-    want to implement infinite scrolling instead of just the click thing
-  */
-
-// MAKE USE EFFECT POPUP / MODAL TO SET THE STATE FOR HOW MANY TEAMS IN DRAFT THEN MAKE THE ROSTER OBJ
-
-// const [rosterObj, setRosterObj] = useState({})
-
-// useEffect(() => {
-
-// },[])
-
-/* 
-  depth charts
-  home
-  teams
-  settings
-
-
-*/
-
-// could try and add link to fantasy pros but it would take some wrangling in the db
-// might need to separate first and last names into their own field - it still wont work perfectly for mfs with weird names though
-
-// const NavBar = () => {
-//   return (
-//     <>
-//       <li>
-//         <Link href="/" className="hover:text-sky-500 dark:hover:text-sky-400">
-//           Home
-//         </Link>
-//       </li>
-
-//       {/* <li>
-//         <Link href="/teams" className="hover:text-sky-500 dark:hover:text-sky-400">
-//           Blog
-//         </Link>
-//       </li> */}
-//       {/* <li>
-//         <Link href="/depth-charts" className="hover:text-sky-500 dark:hover:text-sky-400">
-//           Showcase
-//         </Link>
-//       </li> */}
-//       <li>
-//         <Link
-//           href="/teams/tester"
-//           className="hover:text-sky-500 dark:hover:text-sky-400"
-//         >
-//           Test
-//         </Link>
-//       </li>
-//     </>
-//   );
-// };

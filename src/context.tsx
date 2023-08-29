@@ -1,4 +1,5 @@
 import { createContext } from "react";
+import { number } from "zod";
 import { playerRouter } from "./server/api/routers/player";
 import { type RouterOutputs } from "./utils/api";
 
@@ -7,6 +8,7 @@ export type InitialStateType = {
   Rosters: Record<number, Teams>;
   PickedPlayers: Set<string>;
   NumberOfRounds: number;
+  Pick: number;
 };
 
 export interface Teams {
@@ -24,6 +26,7 @@ export const initialState: InitialStateType = {
   Rosters: {},
   PickedPlayers: new Set<string>(),
   NumberOfRounds: 15,
+  Pick: 1,
 };
 
 export enum ActionType {
@@ -32,6 +35,7 @@ export enum ActionType {
   updateTeamRoster,
   updatePickedPlayers,
   updateNumOfRounds,
+  updatePick,
 }
 
 export interface changeNumTeams {
@@ -54,11 +58,17 @@ export interface updateNumOfRounds {
   payload: number;
 }
 
+export interface updatePick {
+  type: ActionType.updatePick;
+  payload: undefined;
+}
+
 export type DraftSettings =
   | changeNumTeams
   | changePickNumber
   | draftPlayer
-  | updateNumOfRounds;
+  | updateNumOfRounds
+  | updatePick;
 
 export const DraftContext = createContext<{
   state: InitialStateType;
@@ -81,6 +91,11 @@ export const draftPickFunction = (pickNumber: number): changePickNumber => ({
 export const numOfRoundsFunction = (rounds: number): updateNumOfRounds => ({
   type: ActionType.updateNumOfRounds,
   payload: rounds,
+});
+
+export const updatePick = (): updatePick => ({
+  type: ActionType.updatePick,
+  payload: undefined,
 });
 
 export const draftPlayerFunction = (
