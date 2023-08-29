@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { DraftContext } from "~/context";
 import { type NextPage } from "next";
 import Link from "next/link";
@@ -9,6 +9,7 @@ const TeamRosterPage: NextPage<{ team: string }> = () => {
   const router = useRouter();
   const { state, dispatch } = useContext(DraftContext);
   const [flexPosition, setFlexPosition] = useState("");
+
   const teamNumber = Array.isArray(router.query.slug)
     ? router.query.slug[0]
     : router.query.slug ?? 1;
@@ -24,7 +25,8 @@ const TeamRosterPage: NextPage<{ team: string }> = () => {
 
   const decideFlex = () => {
     if (wrArr.length < 3 && rbArr.length < 3) return;
-    if (wrArr.length < 3 || rbArr.length < 3) return;
+    if (wrArr.length < 3) setFlexPosition("RB");
+    if (rbArr.length < 3) setFlexPosition("WR");
   };
 
   return (

@@ -45,7 +45,7 @@ export function draftReducer(
       return {
         ...state,
         PickedPlayers: new Set(state.PickedPlayers),
-        Rosters: { ...newDraftObj }, //PROBABLY FUCKED BECAUSE THE OBJECT IS NESTED FUCK JS
+        Rosters: { ...newDraftObj },
       };
 
     default:
