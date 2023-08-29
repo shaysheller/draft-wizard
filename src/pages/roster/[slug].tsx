@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState, useMemo } from "react";
 import { DraftContext } from "~/context";
 import { type NextPage } from "next";
 import Link from "next/link";
@@ -14,20 +14,34 @@ const TeamRosterPage: NextPage<{ team: string }> = () => {
     ? router.query.slug[0]
     : router.query.slug ?? 1;
 
-  if (teamNumber === undefined) return <div>weird page</div>;
-
   const qbArr = state.Rosters[Number(teamNumber)]?.QB ?? [];
-  const wrArr = state.Rosters[Number(teamNumber)]?.WR ?? [];
-  const rbArr = state.Rosters[Number(teamNumber)]?.RB ?? [];
+  const wrArr = useMemo(
+    () => state.Rosters[Number(teamNumber)]?.WR ?? [],
+    [state.Rosters, teamNumber]
+  );
+
+  const rbArr = useMemo(
+    () => state.Rosters[Number(teamNumber)]?.RB ?? [],
+    [state.Rosters, teamNumber]
+  );
+
   const teArr = state.Rosters[Number(teamNumber)]?.TE ?? [];
   const dstArr = state.Rosters[Number(teamNumber)]?.DST ?? [];
   const kArr = state.Rosters[Number(teamNumber)]?.K ?? [];
 
-  const decideFlex = () => {
-    if (wrArr.length < 3 && rbArr.length < 3) return;
-    if (wrArr.length < 3) setFlexPosition("RB");
-    if (rbArr.length < 3) setFlexPosition("WR");
-  };
+  useEffect(() => {
+    const getFlexPosition = () => {
+      if (wrArr.length < 3 && rbArr.length < 3) return "";
+      else if (wrArr.length < 3) return "RB";
+      else if (rbArr.length < 3) return "WR";
+      else if (wrArr[3]!.adp > rbArr[3]!.adp) return "RB";
+      else return "WR";
+    };
+
+    setFlexPosition(getFlexPosition());
+  }, [wrArr, rbArr]);
+
+  if (teamNumber === undefined) return <div>weird page</div>;
 
   return (
     <>
@@ -82,18 +96,39 @@ const TeamRosterPage: NextPage<{ team: string }> = () => {
             <td>{rbArr?.[1] ? rbArr[1]?.adp : "N/A"}</td>
           </tr>
           <tr>
-            <th scope="row">QB</th>
+            <th scope="row">TE</th>
             <td>{teArr?.[0] ? teArr[0]?.name : "N/A"}</td>
             <td>{teArr?.[0] ? teArr[0]?.team : "N/A"}</td>
             <td>{teArr?.[0] ? teArr[0]?.bye : "N/A"}</td>
             <td>{teArr?.[0] ? teArr[0]?.adp : "N/A"}</td>
           </tr>
           <tr>
-            <th scope="row">WR/RB</th>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            {flexPosition === "RB" ? (
+              <>
+                <th scope="row">WR/RB</th>
+                <td>{rbArr?.[2]?.name ?? "N/A"}</td>
+                <td>{rbArr?.[2]?.team ?? "N/A"}</td>
+                <td>{rbArr?.[2]?.bye ?? "N/A"}</td>
+                <td>{rbArr?.[2]?.adp ?? "N/A"}</td>
+              </>
+            ) : flexPosition === "WR" ? (
+              <>
+                <th scope="row">WR/RB</th>
+                <td>{wrArr?.[2]?.name ?? "N/A"}</td>
+                <td>{wrArr?.[2]?.team ?? "N/A"}</td>
+                <td>{wrArr?.[2]?.bye ?? "N/A"}</td>
+                <td>{wrArr?.[2]?.adp ?? "N/A"}</td>
+              </>
+            ) : (
+              // Default content if flexPosition is neither "RB" nor "WR"
+              <>
+                <th scope="row">WR/RB</th>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>N/A</td>
+              </>
+            )}
           </tr>
 
           <tr>
