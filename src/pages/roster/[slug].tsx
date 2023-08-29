@@ -4,7 +4,10 @@ import { useContext, useEffect, useState, useMemo } from "react";
 import { DraftContext } from "~/context";
 import { type NextPage } from "next";
 import Link from "next/link";
+import teamsArr from "~/utils/teams";
+import { DropDownMenu } from "~/components/dropDown";
 
+//TODO: this page can easily be refactored
 const TeamRosterPage: NextPage<{ team: string }> = () => {
   const router = useRouter();
   const { state, dispatch } = useContext(DraftContext);
@@ -49,6 +52,13 @@ const TeamRosterPage: NextPage<{ team: string }> = () => {
         <title>{`Team ${router.query.slug?.toString()} Current Roster`}</title>
       </Head>
       <div>Team {router.query.slug}</div>
+
+      <DropDownMenu title={"DEPTH CHARTS"} urlParam={"depth"} arr={teamsArr} />
+      <DropDownMenu
+        title={"VIEW ROSTERS"}
+        urlParam={"roster"}
+        arr={Object.keys(state.Rosters)}
+      />
       <table>
         <thead>
           <tr>
