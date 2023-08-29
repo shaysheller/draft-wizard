@@ -17,21 +17,13 @@ import {
 } from "../context";
 
 // TODO: make pick order work and update the draftpick function to add the player to the correct index in the object
+// can do this with set.size i believe
 // TODO: consider making forward ref work so i can just ref the button instead of prop drilling when i draft a player
 // TODO: filter by position but keep order
 // TODO: want to implement infinite scrolling instead of just the click thing
 // TODO: depth charts
 
 type Player = RouterOutputs["player"]["getAll"][number];
-
-interface Teams {
-  QB: Player[];
-  WR: Player[];
-  RB: Player[];
-  TE: Player[];
-  DST: Player[];
-  K: Player[];
-}
 
 const Home: NextPage = () => {
   const { state, dispatch } = useContext(DraftContext);
@@ -42,7 +34,7 @@ const Home: NextPage = () => {
     const please = () => {
       if (state.PickNumber === -1) {
         dispatch(numTeamsFunction(12));
-        dispatch(draftPickFunction(9));
+        dispatch(draftPickFunction(1));
       }
     };
     please();

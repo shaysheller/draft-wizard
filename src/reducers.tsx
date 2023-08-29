@@ -25,9 +25,27 @@ export function draftReducer(
       return { ...state, PickNumber: action.payload };
     case ActionType.updateTeamRoster:
       const newDraftObj = cloneDeep(state.Rosters);
-      const { pickNumber, player } = action.payload;
+      const { player } = action.payload;
 
+      const totalTeams = Object.keys(state.Rosters).length;
       state.PickedPlayers.add(player.name);
+      const currentPick = state.PickedPlayers.size;
+
+      let round;
+      let pickNumber;
+
+      // algorithm for determining whose pick it is to determine which roster to add the player to
+
+      if (currentPick % totalTeams === 0) round = currentPick / totalTeams;
+      else round = Math.floor(currentPick / totalTeams) + 1;
+
+      if (round % 2 === 0) {
+        if (currentPick % totalTeams === 0) pickNumber = 1;
+        else pickNumber = totalTeams - (currentPick % totalTeams) + 1;
+      } else {
+        if (currentPick % totalTeams === 0) pickNumber = totalTeams;
+        else pickNumber = currentPick % totalTeams;
+      }
 
       if (!newDraftObj[pickNumber]) {
         newDraftObj[pickNumber] = {
@@ -41,6 +59,7 @@ export function draftReducer(
       }
       newDraftObj[pickNumber]?.[player.role].push(player); // typescript is not great at handling nested objects
       newDraftObj[pickNumber]?.[player.role].sort((a, b) => a.adp - b.adp);
+      console.log(newDraftObj);
 
       return {
         ...state,
