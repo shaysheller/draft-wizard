@@ -11,17 +11,13 @@ import { useContext, useRef, useState, useMemo, useEffect } from "react";
 import { DropDownNoLink } from "~/components/dropDownNoLink";
 import {
   DraftContext,
-  numTeamsFunction,
-  draftPickFunction,
   draftPlayerFunction,
-  numOfRoundsFunction,
+  setInitialDraftSettings,
 } from "../context";
-import { drop } from "lodash";
 
-// TODO: consider making forward ref work so i can just ref the button instead of prop drilling when i draft a player
-// TODO: filter by position but keep order
 // TODO: want to implement infinite scrolling instead of just the click thing
 // TODO: depth charts
+// TODO: return entire list of players by position so when i filter i can see all that i actually need and draft button still works same i think ?
 
 // filter plan: save in state what we want to filter by -> default: nothing
 // after clicking it we need to pass something into the mapping function in home component that decides which players we show
@@ -33,18 +29,6 @@ type Player = RouterOutputs["player"]["getAll"][number];
 const Home: NextPage = () => {
   const { state, dispatch } = useContext(DraftContext);
   const [currentPositionFilter, setCurrentPositionFilter] = useState("ALL");
-  const [currentPick, setCurrentPick] = useState(1);
-
-  // THIS CAN BE REMOVED IT'S SO I CAN BYPASS NEEDING TO SET TEAMS/PICK EVERY TIME I REFRESH
-  useEffect(() => {
-    const please = () => {
-      if (state.PickNumber === -1) {
-        dispatch(numTeamsFunction(2));
-        dispatch(draftPickFunction(1));
-      }
-    };
-    please();
-  }, [dispatch, state.PickNumber]);
 
   // might need to tinker with the refecth mechanics because it refetches every time i click back on to the page
   const { data, fetchNextPage, isLoading, isFetching, hasNextPage } =
@@ -60,7 +44,7 @@ const Home: NextPage = () => {
   if (!data && (isLoading || isFetching)) return <LoadingPage />;
 
   const handlePlayerDraft = (player: Player) => {
-    dispatch(draftPlayerFunction(currentPick, player));
+    dispatch(draftPlayerFunction(player)); // don't need curretnpick
   };
 
   const handleFilterChange = (selectedValue: string) => {
@@ -94,22 +78,27 @@ const Home: NextPage = () => {
         </div>
 
         <div className="flex h-full w-full flex-col gap-4 overflow-y-auto">
-          <PlayerFeed
-            playerArr={
-              data?.pages?.flatMap((page) =>
-                page.items.filter((player) => {
-                  if (currentPositionFilter === "ALL")
-                    return !state.PickedPlayers.has(player.name);
-                  else
-                    return (
-                      !state.PickedPlayers.has(player.name) &&
-                      player.role === currentPositionFilter
-                    );
-                })
-              ) ?? []
-            }
-            handlePlayerDraft={handlePlayerDraft}
-          />
+          {state.PickedPlayers.size >=
+          Object.keys(state.Rosters).length * state.NumberOfRounds ? (
+            <div>DRAFT OVER</div>
+          ) : (
+            <PlayerFeed
+              playerArr={
+                data?.pages?.flatMap((page) =>
+                  page.items.filter((player) => {
+                    if (currentPositionFilter === "ALL")
+                      return !state.PickedPlayers.has(player.name);
+                    else
+                      return (
+                        !state.PickedPlayers.has(player.name) &&
+                        player.role === currentPositionFilter
+                      );
+                  })
+                ) ?? []
+              }
+              handlePlayerDraft={handlePlayerDraft}
+            />
+          )}
         </div>
         {hasNextPage && !isLoading && !isFetching ? (
           <button
@@ -198,9 +187,12 @@ const Modal = () => {
       alert("Pick # cannot be larger than # of teams - Please re-enter");
       return;
     }
-    dispatch(numTeamsFunction(Number(numTeamsRef.current?.value)));
-    dispatch(draftPickFunction(Number(pickNumberRef.current?.value)));
-    dispatch(numOfRoundsFunction(Number(draftRoundsRef.current?.value)));
+
+    const numTeams = Number(numTeamsRef.current?.value);
+    const draftPick = Number(pickNumberRef.current?.value);
+    const numRounds = Number(draftRoundsRef.current?.value);
+
+    dispatch(setInitialDraftSettings(numTeams, draftPick, numRounds));
   };
 
   return createPortal(

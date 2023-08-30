@@ -133,8 +133,9 @@ const TeamRosterPage: NextPage<{ team: string }> = () => {
             <td>BENCH</td>
             <td>BENCH</td>
           </tr>
-          {benchArr.map((player: Player | undefined) => {
-            if (player === undefined) return <TableRow position={undefined} />;
+          {benchArr.map((player: Player | undefined, i) => {
+            if (player === undefined)
+              return <TableRow key={i} position={undefined} />;
             else
               return (
                 <TableRow

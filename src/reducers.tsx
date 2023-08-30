@@ -8,9 +8,10 @@ export function draftReducer(
   action: DraftSettings
 ): InitialStateType {
   switch (action.type) {
-    case ActionType.changeNumTeams:
+    case ActionType.setInitialDraftSettings:
+      const { numTeams, draftPick, numRounds } = action.payload;
       const obj: Record<number, Teams> = {};
-      for (let i = 1; i <= action.payload; i++) {
+      for (let i = 1; i <= numTeams; i++) {
         obj[i] = {
           QB: [],
           WR: [],
@@ -20,9 +21,12 @@ export function draftReducer(
           K: [],
         };
       }
-      return { ...state, Rosters: obj };
-    case ActionType.changePickNumber:
-      return { ...state, PickNumber: action.payload };
+      return {
+        ...state,
+        PickNumber: draftPick,
+        NumberOfRounds: numRounds,
+        Rosters: obj,
+      };
     case ActionType.updateTeamRoster:
       const newDraftObj = cloneDeep(state.Rosters);
       const { player } = action.payload;
@@ -65,9 +69,6 @@ export function draftReducer(
         PickedPlayers: new Set(state.PickedPlayers),
         Rosters: { ...newDraftObj },
       };
-
-    case ActionType.updatePick:
-      return { ...state, Pick: state.Pick + 1 };
 
     default:
       return state;

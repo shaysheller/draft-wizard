@@ -8,7 +8,6 @@ export type InitialStateType = {
   Rosters: Record<number, Teams>;
   PickedPlayers: Set<string>;
   NumberOfRounds: number;
-  Pick: number;
 };
 
 export interface Teams {
@@ -26,7 +25,6 @@ export const initialState: InitialStateType = {
   Rosters: {},
   PickedPlayers: new Set<string>(),
   NumberOfRounds: 15,
-  Pick: 1,
 };
 
 export enum ActionType {
@@ -36,11 +34,17 @@ export enum ActionType {
   updatePickedPlayers,
   updateNumOfRounds,
   updatePick,
+  setInitialDraftSettings,
 }
 
 export interface changeNumTeams {
   type: ActionType.changeNumTeams;
   payload: number;
+}
+
+export interface setInitialDraftSettings {
+  type: ActionType.setInitialDraftSettings;
+  payload: { numTeams: number; draftPick: number; numRounds: number };
 }
 
 export interface changePickNumber {
@@ -50,7 +54,7 @@ export interface changePickNumber {
 
 export interface draftPlayer {
   type: ActionType.updateTeamRoster;
-  payload: { pickNumber: number; player: Player };
+  payload: { player: Player };
 }
 
 export interface updateNumOfRounds {
@@ -68,7 +72,8 @@ export type DraftSettings =
   | changePickNumber
   | draftPlayer
   | updateNumOfRounds
-  | updatePick;
+  | updatePick
+  | setInitialDraftSettings;
 
 export const DraftContext = createContext<{
   state: InitialStateType;
@@ -98,10 +103,17 @@ export const updatePick = (): updatePick => ({
   payload: undefined,
 });
 
-export const draftPlayerFunction = (
-  pickNumber: number,
-  player: Player
-): draftPlayer => ({
+export const setInitialDraftSettings = (
+  numTeams: number,
+  draftPick: number,
+  numRounds: number
+): setInitialDraftSettings => ({
+  type: ActionType.setInitialDraftSettings,
+  payload: { numTeams, draftPick, numRounds },
+});
+
+// might not need pick number since i moved that to context
+export const draftPlayerFunction = (player: Player): draftPlayer => ({
   type: ActionType.updateTeamRoster,
-  payload: { pickNumber, player },
+  payload: { player },
 });
