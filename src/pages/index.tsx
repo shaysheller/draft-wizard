@@ -22,7 +22,6 @@ import {
 // TODO: filter by position but keep order
 // TODO: want to implement infinite scrolling instead of just the click thing
 // TODO: depth charts
-
 type Player = RouterOutputs["player"]["getAll"][number];
 
 const Home: NextPage = () => {
@@ -33,7 +32,7 @@ const Home: NextPage = () => {
   useEffect(() => {
     const please = () => {
       if (state.PickNumber === -1) {
-        dispatch(numTeamsFunction(12));
+        dispatch(numTeamsFunction(2));
         dispatch(draftPickFunction(1));
       }
     };
