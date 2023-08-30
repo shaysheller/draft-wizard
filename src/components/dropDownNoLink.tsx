@@ -2,16 +2,16 @@ import { Menu, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import Link from "next/link";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import { forwardRef, type Ref } from "react";
 
-export const DropDownMenu = (props: {
+export const DropDownNoLink = (props: {
   title: string;
   arr: string[];
-  urlParam: string;
+  handleSelect: (selectedValue: string) => void;
 }) => {
   let dropDownHeight;
   if (props.arr.length < 6) dropDownHeight = "h-fit";
   else dropDownHeight = "h-48";
-
   return (
     <div>
       <Menu as="div" className="relative inline-block text-left">
@@ -39,14 +39,14 @@ export const DropDownMenu = (props: {
                 return (
                   <Menu.Item key={item}>
                     {({ active }) => (
-                      <Link
-                        href={`/${props.urlParam}/${item}`}
+                      <button
+                        onClick={() => props.handleSelect(item)}
                         className={`${
                           active ? "bg-violet-500 text-white" : "text-gray-900"
                         } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                       >
                         {item}
-                      </Link>
+                      </button>
                     )}
                   </Menu.Item>
                 );

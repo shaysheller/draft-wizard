@@ -8,6 +8,7 @@ import { positionColors } from "~/utils/positionColors";
 import { DropDownMenu } from "~/components/dropDown";
 import { createPortal } from "react-dom";
 import { useContext, useRef, useState, useMemo, useEffect } from "react";
+import { DropDownNoLink } from "~/components/dropDownNoLink";
 import {
   DraftContext,
   numTeamsFunction,
@@ -15,17 +16,23 @@ import {
   draftPlayerFunction,
   numOfRoundsFunction,
 } from "../context";
+import { drop } from "lodash";
 
-// TODO: make pick order work and update the draftpick function to add the player to the correct index in the object
-// can do this with set.size i believe
 // TODO: consider making forward ref work so i can just ref the button instead of prop drilling when i draft a player
 // TODO: filter by position but keep order
 // TODO: want to implement infinite scrolling instead of just the click thing
 // TODO: depth charts
+
+// filter plan: save in state what we want to filter by -> default: nothing
+// after clicking it we need to pass something into the mapping function in home component that decides which players we show
+
+const positionArray = ["ALL", "WR", "RB", "QB", "TE", "DST", "K"];
+
 type Player = RouterOutputs["player"]["getAll"][number];
 
 const Home: NextPage = () => {
   const { state, dispatch } = useContext(DraftContext);
+  const [currentPositionFilter, setCurrentPositionFilter] = useState("ALL");
   const [currentPick, setCurrentPick] = useState(1);
 
   // THIS CAN BE REMOVED IT'S SO I CAN BYPASS NEEDING TO SET TEAMS/PICK EVERY TIME I REFRESH
@@ -56,6 +63,10 @@ const Home: NextPage = () => {
     dispatch(draftPlayerFunction(currentPick, player));
   };
 
+  const handleFilterChange = (selectedValue: string) => {
+    setCurrentPositionFilter(selectedValue);
+  };
+
   return (
     <>
       <PageLayout>
@@ -74,6 +85,11 @@ const Home: NextPage = () => {
               urlParam={"roster"}
               arr={Object.keys(state.Rosters)}
             />
+            <DropDownNoLink
+              handleSelect={handleFilterChange}
+              title={"FILTER POSITION"}
+              arr={positionArray}
+            />
           </div>
         </div>
 
@@ -81,9 +97,15 @@ const Home: NextPage = () => {
           <PlayerFeed
             playerArr={
               data?.pages?.flatMap((page) =>
-                page.items.filter(
-                  (player) => !state.PickedPlayers.has(player.name)
-                )
+                page.items.filter((player) => {
+                  if (currentPositionFilter === "ALL")
+                    return !state.PickedPlayers.has(player.name);
+                  else
+                    return (
+                      !state.PickedPlayers.has(player.name) &&
+                      player.role === currentPositionFilter
+                    );
+                })
               ) ?? []
             }
             handlePlayerDraft={handlePlayerDraft}
