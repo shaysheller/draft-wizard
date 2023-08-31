@@ -18,6 +18,7 @@ import {
 // TODO: want to implement infinite scrolling instead of just the click thing
 // TODO: depth charts
 // TODO: return entire list of players by position so when i filter i can see all that i actually need and draft button still works same i think ?
+// TODO: I think I might not need to save everything in context if i just save everything in App.tsx i'm not sure
 
 // filter plan: save in state what we want to filter by -> default: nothing
 // after clicking it we need to pass something into the mapping function in home component that decides which players we show
@@ -197,7 +198,7 @@ const Modal = () => {
 
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 shadow-md">
-      <div className="h-fit w-1/5 rounded-lg bg-white">
+      <div className="h-fit w-fit rounded-lg bg-white">
         <form
           onSubmit={onSubmit}
           className="mb-4 rounded bg-white px-8 pb-8 pt-6"
