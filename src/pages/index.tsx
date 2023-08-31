@@ -3,7 +3,7 @@ import { type NextPage } from "next";
 import { LoadingPage } from "~/components/loading";
 import { type RouterOutputs } from "~/utils/api";
 import { PageLayout } from "~/components/layout";
-import teamsArr from "~/utils/teams";
+import teamsArr, { teamsUrls } from "~/utils/teams";
 import { positionColors } from "~/utils/positionColors";
 import { DropDownMenu } from "~/components/dropDown";
 import { createPortal } from "react-dom";
@@ -14,6 +14,7 @@ import {
   draftPlayerFunction,
   setInitialDraftSettings,
 } from "../context";
+import { DepthDropDown } from "~/components/depthDropDown";
 
 // TODO: want to implement infinite scrolling instead of just the click thing
 // TODO: depth charts
@@ -60,9 +61,9 @@ const Home: NextPage = () => {
         <div className=" my-6 flex h-fit flex-col items-center justify-center">
           <h1 className="text-black">ADP LIST</h1>
           <div className="flex">
-            <DropDownMenu
+            <DepthDropDown
               title={"DEPTH CHARTS"}
-              urlParam={"depth"}
+              urlArray={teamsUrls}
               arr={teamsArr}
             />
             <DropDownMenu
