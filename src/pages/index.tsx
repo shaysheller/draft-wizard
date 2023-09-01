@@ -13,13 +13,16 @@ import {
   DraftContext,
   draftPlayerFunction,
   setInitialDraftSettings,
+  undoPickFunction,
 } from "../context";
 import { DepthDropDown } from "~/components/depthDropDown";
 
 // TODO: want to implement infinite scrolling instead of just the click thing
-// TODO: depth charts
+// TODO: undo button
+// TODO: make a picked player list with same filters etc
 // TODO: return entire list of players by position so when i filter i can see all that i actually need and draft button still works same i think ?
 // TODO: I think I might not need to save everything in context if i just save everything in App.tsx i'm not sure
+// TODO: refactor context to jotai/zustand
 
 // filter plan: save in state what we want to filter by -> default: nothing
 // after clicking it we need to pass something into the mapping function in home component that decides which players we show
@@ -60,7 +63,14 @@ const Home: NextPage = () => {
         {/* could add a toaster thing to alert the user that they have successfully submitted */}
         <div className=" my-6 flex h-fit flex-col items-center justify-center">
           <h1 className="text-black">ADP LIST</h1>
-          <div className="flex">
+          <h2>PICK {state.PickedPlayers.size}</h2>
+          <button
+            disabled={state.PickedPlayers.size < 1}
+            onClick={() => dispatch(undoPickFunction())}
+          >
+            UNDO
+          </button>
+          <div className="  flex">
             <DepthDropDown
               title={"DEPTH CHARTS"}
               urlArray={teamsUrls}

@@ -39,6 +39,7 @@ export function draftReducer(
       let pickNumber;
 
       // algorithm for determining whose pick it is to determine which roster to add the player to
+      // TODO: need to split this into another function to determine the pick we're on
 
       if (currentPick % totalTeams === 0) round = currentPick / totalTeams;
       else round = Math.floor(currentPick / totalTeams) + 1;
@@ -61,13 +62,75 @@ export function draftReducer(
           K: [],
         };
       }
-      newDraftObj[pickNumber]?.[player.role].push(player); // typescript is not great at handling nested objects
+      newDraftObj[pickNumber]?.[player.role].push(player); // typescript is not great at handling nested objects - could use zod
       newDraftObj[pickNumber]?.[player.role].sort((a, b) => a.adp - b.adp);
+      // console.log(newDraftObj);
 
       return {
         ...state,
         PickedPlayers: new Set(state.PickedPlayers),
         Rosters: { ...newDraftObj },
+      };
+
+    case ActionType.undoPick: // this method is complete cancer but i had a deadline
+      const playerArr = Array.from(state.PickedPlayers);
+      const removedPlayer = playerArr.pop();
+      const newObj = cloneDeep(state.Rosters);
+
+      const teams = Object.keys(state.Rosters).length;
+      const pick = state.PickedPlayers.size;
+
+      let roundNum;
+      let pickNum;
+
+      // algorithm for determining whose pick it is to determine which roster to add the player to
+      // TODO: need to split this into another function to determine the pick we're on
+
+      if (pick % teams === 0) roundNum = pick / teams;
+      else roundNum = Math.floor(pick / teams) + 1;
+
+      if (roundNum % 2 === 0) {
+        if (pick % teams === 0) pickNum = 1;
+        else pickNum = teams - (pick % teams) + 1;
+      } else {
+        if (pick % teams === 0) pickNum = teams;
+        else pickNum = pick % teams;
+      }
+
+      if (!newObj[Number(pickNum)]) {
+        newObj[Number(pickNum)] = {
+          QB: [],
+          WR: [],
+          TE: [],
+          RB: [],
+          DST: [],
+          K: [],
+        };
+      }
+
+      console.log("before", newObj[pickNum]);
+
+      const positions: (keyof Teams)[] = ["QB", "WR", "RB", "TE", "DST", "K"];
+
+      // eslint-disable-next-line @typescript-eslint/prefer-for-of
+      for (let i = 0; i < positions.length; i++) {
+        const position = positions[i]!;
+        const teamArr = newObj[pickNum]![position];
+
+        if (Array.isArray(teamArr)) {
+          // Use array filtering to remove the player
+          newObj[pickNum]![position] = teamArr.filter(
+            (player) => player.name !== removedPlayer
+          );
+        }
+      }
+
+      console.log("after", newObj[pickNum]);
+
+      return {
+        ...state,
+        PickedPlayers: new Set([...playerArr]),
+        Rosters: { ...newObj },
       };
 
     default:

@@ -6,9 +6,22 @@ const parse = require("csv-parser");
 const path = require("path");
 
 const prisma = new PrismaClient();
+async function clearDatabase() {
+  try {
+    await prisma.player.deleteMany({});
+    // Add more deleteMany calls for other models if needed
+
+    console.log("Database cleared successfully.");
+  } catch (error) {
+    console.error("Error clearing the database:", error);
+  }
+}
 
 async function importCsvData() {
   const csvFilePath = path.join(__dirname, "CSV_UPLOAD.csv");
+
+  // Clear the database before importing
+  await clearDatabase();
 
   console.log("in import csv");
   fs.createReadStream(csvFilePath)
@@ -16,9 +29,9 @@ async function importCsvData() {
     .on("data", async (row) => {
       await prisma.player.create({
         data: {
-          name: row.player,
-          role: row.pos,
-          adp: parseInt(row.avg, 10), // Assuming 'adp' is a number
+          name: row.player || "NA", // Map 'player' column to 'name' field
+          role: row.pos, // Map 'pos' column to 'role' field
+          adp: parseFloat(row.adp), // Map 'adp' column to 'adp' field as a number
           team: row.team || "N/A",
           bye: parseInt(row.bye, 10) || -1,
         },
@@ -26,6 +39,7 @@ async function importCsvData() {
     })
     .on("end", () => {
       console.log("CSV data imported into the database.");
+      prisma.$disconnect(); // Disconnect the Prisma client after import
     });
 }
 

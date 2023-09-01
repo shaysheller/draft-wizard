@@ -35,11 +35,17 @@ export enum ActionType {
   updateNumOfRounds,
   updatePick,
   setInitialDraftSettings,
+  undoPick,
 }
 
 export interface changeNumTeams {
   type: ActionType.changeNumTeams;
   payload: number;
+}
+
+export interface undoPick {
+  type: ActionType.undoPick;
+  payload: undefined;
 }
 
 export interface setInitialDraftSettings {
@@ -73,7 +79,8 @@ export type DraftSettings =
   | draftPlayer
   | updateNumOfRounds
   | updatePick
-  | setInitialDraftSettings;
+  | setInitialDraftSettings
+  | undoPick;
 
 export const DraftContext = createContext<{
   state: InitialStateType;
@@ -100,6 +107,11 @@ export const numOfRoundsFunction = (rounds: number): updateNumOfRounds => ({
 
 export const updatePick = (): updatePick => ({
   type: ActionType.updatePick,
+  payload: undefined,
+});
+
+export const undoPickFunction = (): undoPick => ({
+  type: ActionType.undoPick,
   payload: undefined,
 });
 

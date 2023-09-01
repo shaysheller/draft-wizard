@@ -16,7 +16,7 @@ model Player {
   createdAt DateTime @default(now())
   name      String
   role      Position 
-  adp       Int 
+  adp       Float 
   team      String  @default("")
   bye       Int     @default(-1)
 }
