@@ -64,12 +64,6 @@ const Home: NextPage = () => {
         <div className=" my-6 flex h-fit flex-col items-center justify-center">
           <h1 className="text-black">ADP LIST</h1>
           <h2>PICK {state.PickedPlayers.size}</h2>
-          <button
-            disabled={state.PickedPlayers.size < 1}
-            onClick={() => dispatch(undoPickFunction())}
-          >
-            UNDO
-          </button>
           <div className="  flex">
             <DepthDropDown
               title={"DEPTH CHARTS"}
@@ -86,6 +80,13 @@ const Home: NextPage = () => {
               title={"FILTER POSITION"}
               arr={positionArray}
             />
+            <button
+              className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+              disabled={state.PickedPlayers.size < 1}
+              onClick={() => dispatch(undoPickFunction())}
+            >
+              UNDO
+            </button>
           </div>
         </div>
 
