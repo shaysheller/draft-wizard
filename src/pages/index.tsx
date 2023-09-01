@@ -63,7 +63,7 @@ const Home: NextPage = () => {
         {/* could add a toaster thing to alert the user that they have successfully submitted */}
         <div className=" my-6 flex h-fit flex-col items-center justify-center">
           <h1 className="text-black">ADP LIST</h1>
-          <h2>PICK {state.PickedPlayers.size}</h2>
+          <h2>PICK {state.PickedPlayers.size + 1}</h2>
           <div className="  flex">
             <DepthDropDown
               title={"DEPTH CHARTS"}
