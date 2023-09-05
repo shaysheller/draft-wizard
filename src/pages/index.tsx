@@ -113,17 +113,19 @@ const Home: NextPage = () => {
             />
           )}
         </div>
-        {hasNextPage && !isLoading && !isFetching ? (
-          <button
-            // eslint-disable-next-line
-            onClick={async () => await fetchNextPage()}
-            className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
-          >
-            LOAD MORE
-          </button>
-        ) : (
-          <LoadingPage />
-        )}
+        <div className="h-1/6">
+          {hasNextPage && !isLoading && !isFetching ? (
+            <button
+              // eslint-disable-next-line
+              onClick={async () => await fetchNextPage()}
+              className="h-1/2 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+            >
+              LOAD MORE
+            </button>
+          ) : (
+            <LoadingPage />
+          )}
+        </div>
       </PageLayout>
     </>
   );
