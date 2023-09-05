@@ -136,13 +136,15 @@ const PlayerFeed = (props: {
   const { playerArr } = props;
   return (
     <>
-      {playerArr.map((player) => (
-        <Player
-          player={player}
-          key={player.id}
-          handlePlayerDraft={props.handlePlayerDraft}
-        />
-      ))}
+      <div className="flex flex-col gap-4 px-4">
+        {playerArr.map((player) => (
+          <Player
+            player={player}
+            key={player.id}
+            handlePlayerDraft={props.handlePlayerDraft}
+          />
+        ))}
+      </div>
     </>
   );
 };
@@ -156,24 +158,21 @@ const Player = (props: {
   return (
     <div
       key={player.id}
-      className={`flex gap-3 border-b ${positionColorClass} border-slate-400 p-4`}
+      className={`flex h-28 w-full items-center rounded-lg bg-slate-50 text-center drop-shadow-md`}
     >
-      <div className="flex gap-4">
-        <div className="flex gap-5 text-slate-300"></div>
-        <span className="flex flex-col text-2xl">
-          <span>{player.name}:</span>
-          <span>{player.role}</span>
-        </span>
-        <span className="text-2xl">Team: {player.team}</span>
-        <span className="text-2xl">Bye: {player.bye}</span>
-        <span className="text-2xl">ADP: {player.adp}</span>
-        <button
-          onClick={(e) => handlePlayerDraft(player)}
-          className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
-        >
-          Draft
-        </button>
-      </div>
+      <span className="flex w-1/3 flex-col items-center text-2xl">
+        <span className="text-md">{player.name}</span>
+        <span className={`${positionColorClass}`}>{player.role}</span>
+      </span>
+      <span className="w-1/6 text-2xl">{player.team}</span>
+      <span className="w-1/6 text-2xl">Bye: {player.bye}</span>
+      <span className="w-1/6 text-2xl">ADP: {player.adp}</span>
+      <button
+        onClick={(e) => handlePlayerDraft(player)}
+        className="ml-4 h-fit w-fit rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+      >
+        Draft
+      </button>
     </div>
   );
 };

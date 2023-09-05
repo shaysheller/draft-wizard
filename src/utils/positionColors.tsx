@@ -1,8 +1,8 @@
 export const positionColors = {
-  WR: "bg-green-400",
-  QB: "bg-blue-500",
-  RB: "bg-red-500",
-  K: "bg-gray-500",
-  TE: "bg-violet-500",
-  DST: "bg-yellow-500",
+  WR: "text-green-400",
+  QB: "text-blue-500",
+  RB: "text-red-500",
+  K: "text-gray-500",
+  TE: "text-violet-500",
+  DST: "text-yellow-500",
 };
