@@ -32,7 +32,7 @@ export const DropDownMenu = (props: {
           leaveTo="transform opacity-0 scale-95"
         >
           <Menu.Items
-            className={`${dropDownHeight} absolute right-0 mt-2 w-fit origin-top-right divide-y divide-gray-100 overflow-y-auto rounded-md bg-white pr-2 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none`}
+            className={`${dropDownHeight} absolute right-0 z-10 mt-2 w-fit origin-top-right divide-y divide-gray-100 overflow-y-auto rounded-md bg-white pr-2 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none`}
           >
             <div className="px-1 py-1 ">
               {props.arr.map((item) => {

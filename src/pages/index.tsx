@@ -1,6 +1,6 @@
 import { api } from "~/utils/api";
 import { type NextPage } from "next";
-import { LoadingPage } from "~/components/loading";
+import { LoadingPage, LoadingSpinner } from "~/components/loading";
 import { type RouterOutputs } from "~/utils/api";
 import { PageLayout } from "~/components/layout";
 import teamsArr, { teamsUrls } from "~/utils/teams";
@@ -71,22 +71,15 @@ const Home: NextPage = () => {
               arr={teamsArr}
             />
             <DropDownMenu
-              title={"VIEW ROSTERS"}
+              title={"ROSTERS"}
               urlParam={"roster"}
               arr={Object.keys(state.Rosters)}
             />
             <DropDownNoLink
               handleSelect={handleFilterChange}
-              title={"FILTER POSITION"}
+              title={"POSITION"}
               arr={positionArray}
             />
-            <button
-              className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
-              disabled={state.PickedPlayers.size < 1}
-              onClick={() => dispatch(undoPickFunction())}
-            >
-              UNDO
-            </button>
           </div>
         </div>
 
@@ -113,18 +106,35 @@ const Home: NextPage = () => {
             />
           )}
         </div>
-        <div className="h-1/6">
-          {hasNextPage && !isLoading && !isFetching ? (
-            <button
-              // eslint-disable-next-line
-              onClick={async () => await fetchNextPage()}
-              className="h-1/2 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
-            >
-              LOAD MORE
-            </button>
-          ) : (
-            <LoadingPage />
-          )}
+        <div className="flex h-1/6 w-full flex-col items-center justify-center text-center">
+          <div className="flex items-center gap-2 text-center">
+            {hasNextPage && !isLoading && !isFetching ? (
+              <button
+                // eslint-disable-next-line
+                onClick={async () => await fetchNextPage()}
+                className="h-fit rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+              >
+                LOAD MORE
+              </button>
+            ) : (
+              <LoadingSpinner size={30} />
+            )}
+            {state.PickedPlayers.size !== 0 ? (
+              <button
+                className="h-fit rounded border border-blue-500 px-4 py-2 font-bold text-blue-500 hover:border-blue-700 hover:text-blue-700"
+                disabled={state.PickedPlayers.size < 1}
+                onClick={() => dispatch(undoPickFunction())}
+              >
+                UNDO
+              </button>
+            ) : (
+              <p className="h-fit rounded border border-blue-500 px-4 py-2 text-blue-500">
+                UNDO N/A
+              </p>
+            )}
+          </div>
+
+          <footer className="w-fit">In the Lab Productions</footer>
         </div>
       </PageLayout>
     </>
