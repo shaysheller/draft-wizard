@@ -8,6 +8,7 @@ import { positionColors } from "~/utils/positionColors";
 import { DropDownMenu } from "~/components/dropDown";
 import { createPortal } from "react-dom";
 import { useContext, useRef, useState, useMemo, useEffect } from "react";
+import { toast } from "react-hot-toast";
 import { DropDownNoLink } from "~/components/dropDownNoLink";
 import {
   DraftContext,
@@ -17,6 +18,7 @@ import {
 } from "../context";
 import { DepthDropDown } from "~/components/depthDropDown";
 
+// TODO: want to disable the undo button - and possibly all draft buttons and have a toaster to show which player was drafted / undone
 // TODO: want to implement infinite scrolling instead of just the click thing
 // TODO: undo button
 // TODO: make a picked player list with same filters etc
@@ -49,6 +51,7 @@ const Home: NextPage = () => {
   if (!data && (isLoading || isFetching)) return <LoadingPage />;
 
   const handlePlayerDraft = (player: Player) => {
+    toast.success(`${player.name} successfully drafted!`);
     dispatch(draftPlayerFunction(player)); // don't need curretnpick
   };
 
@@ -56,14 +59,19 @@ const Home: NextPage = () => {
     setCurrentPositionFilter(selectedValue);
   };
 
+  const handleUndo = () => {
+    if (state.PickedPlayers.size < 1)
+      return toast.error("No players to undo. Please pick a player!");
+    dispatch(undoPickFunction());
+    toast.success(`Successful undo!`);
+  };
+
   return (
     <>
       <PageLayout>
         {state.PickNumber === -1 && <Modal />}
         {/* could add a toaster thing to alert the user that they have successfully submitted */}
-        <div className=" my-6 flex h-fit flex-col items-center justify-center">
-          <h1 className="text-black">ADP LIST</h1>
-          <h2>PICK {state.PickedPlayers.size + 1}</h2>
+        <div className="my-2 flex h-fit flex-col items-center justify-center">
           <div className="  flex">
             <DepthDropDown
               title={"DEPTH CHARTS"}
@@ -106,7 +114,7 @@ const Home: NextPage = () => {
             />
           )}
         </div>
-        <div className="flex h-1/6 w-full flex-col items-center justify-center text-center">
+        <div className="flex h-1/4 w-full flex-col items-center justify-center text-center">
           <div className="flex w-full gap-2 text-center">
             <div className="flex flex-1 items-center justify-center">
               {hasNextPage && !isLoading && !isFetching ? (
@@ -121,18 +129,20 @@ const Home: NextPage = () => {
                 <LoadingSpinner size={30} />
               )}
             </div>
+            <div className="flex flex-1 items-center justify-center text-center">
+              <p>Pick: {state.PickedPlayers.size + 1}</p>
+            </div>
             <div className="flex-1">
               <button
                 className="h-fit rounded border border-blue-500 px-4 py-2 font-bold text-blue-500 hover:border-blue-700 hover:text-blue-700"
-                disabled={state.PickedPlayers.size < 1}
-                onClick={() => dispatch(undoPickFunction())}
+                onClick={() => handleUndo()}
               >
-                {state.PickedPlayers.size !== 1 ? "UNDO" : "UNDO N/A"}
+                UNDO
               </button>
             </div>
           </div>
 
-          <footer className="w-fit">In the Lab Productions</footer>
+          <footer className="">In the Lab</footer>
         </div>
       </PageLayout>
     </>

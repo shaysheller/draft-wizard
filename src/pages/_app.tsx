@@ -4,6 +4,7 @@ import "~/styles/globals.css";
 import Head from "next/head";
 import { draftReducer } from "../reducers";
 import { DraftContext, initialState } from "../context";
+import { Toaster } from "react-hot-toast";
 import { useReducer } from "react";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
@@ -17,6 +18,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         {/* <link rel="icon" href="/favicon.ico" /> */}
       </Head>
       <DraftContext.Provider value={{ state, dispatch }}>
+        <Toaster position="bottom-right" />
         <Component {...pageProps} />
       </DraftContext.Provider>
     </>
