@@ -107,31 +107,29 @@ const Home: NextPage = () => {
           )}
         </div>
         <div className="flex h-1/6 w-full flex-col items-center justify-center text-center">
-          <div className="flex items-center gap-2 text-center">
-            {hasNextPage && !isLoading && !isFetching ? (
-              <button
-                // eslint-disable-next-line
-                onClick={async () => await fetchNextPage()}
-                className="h-fit rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
-              >
-                LOAD MORE
-              </button>
-            ) : (
-              <LoadingSpinner size={30} />
-            )}
-            {state.PickedPlayers.size !== 0 ? (
+          <div className="flex w-full gap-2 text-center">
+            <div className="flex flex-1 items-center justify-center">
+              {hasNextPage && !isLoading && !isFetching ? (
+                <button
+                  // eslint-disable-next-line
+                  onClick={async () => await fetchNextPage()}
+                  className="h-fit rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+                >
+                  LOAD MORE
+                </button>
+              ) : (
+                <LoadingSpinner size={30} />
+              )}
+            </div>
+            <div className="flex-1">
               <button
                 className="h-fit rounded border border-blue-500 px-4 py-2 font-bold text-blue-500 hover:border-blue-700 hover:text-blue-700"
                 disabled={state.PickedPlayers.size < 1}
                 onClick={() => dispatch(undoPickFunction())}
               >
-                UNDO
+                {state.PickedPlayers.size !== 1 ? "UNDO" : "UNDO N/A"}
               </button>
-            ) : (
-              <p className="h-fit rounded border border-blue-500 px-4 py-2 text-blue-500">
-                UNDO N/A
-              </p>
-            )}
+            </div>
           </div>
 
           <footer className="w-fit">In the Lab Productions</footer>
