@@ -51,6 +51,7 @@ const Home: NextPage = () => {
   if (!data && (isLoading || isFetching)) return <LoadingPage />;
 
   const handlePlayerDraft = (player: Player) => {
+    toast.dismiss();
     toast.success(`${player.name} successfully drafted!`);
     dispatch(draftPlayerFunction(player)); // don't need curretnpick
   };
@@ -60,6 +61,7 @@ const Home: NextPage = () => {
   };
 
   const handleUndo = () => {
+    toast.dismiss();
     if (state.PickedPlayers.size < 1)
       return toast.error("No players to undo. Please pick a player!");
     dispatch(undoPickFunction());
