@@ -21,7 +21,6 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         <Toaster
           position="top-right"
           toastOptions={{
-            // Define default options
             duration: 2000,
           }}
         />

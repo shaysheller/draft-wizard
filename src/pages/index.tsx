@@ -182,10 +182,10 @@ const Player = (props: {
       key={player.id}
       className={`flex h-28 w-full items-center rounded-lg bg-slate-50 text-center drop-shadow-md`}
     >
-      <span className="flex w-1/3 flex-col items-center text-2xl">
+      <div className="flex w-1/3 flex-col items-center text-2xl">
         <span className="text-md">{player.name}</span>
         <span className={`${positionColorClass}`}>{player.role}</span>
-      </span>
+      </div>
       <span className="w-1/6 text-2xl">{player.team}</span>
       <span className="w-1/6 text-2xl">Bye: {player.bye}</span>
       <span className="w-1/6 text-2xl">ADP: {player.adp}</span>
