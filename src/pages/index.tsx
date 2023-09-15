@@ -18,13 +18,13 @@ import {
 } from "../context";
 import { DepthDropDown } from "~/components/depthDropDown";
 
-// TODO: want to disable the undo button - and possibly all draft buttons and have a toaster to show which player was drafted / undone
+// TODO: need to redo the undo function to somehow give access to the player that was undone in the client so i can use it with the toaster message
 // TODO: want to implement infinite scrolling instead of just the click thing
-// TODO: undo button
+// TODO: fix routing or make it actually work the nextjs way
 // TODO: make a picked player list with same filters etc
 // TODO: return entire list of players by position so when i filter i can see all that i actually need and draft button still works same i think ?
-// TODO: I think I might not need to save everything in context if i just save everything in App.tsx i'm not sure
-// TODO: refactor context to jotai/zustand
+// TODO: I think I might not need to save everything in context if i just save everything in App.tsx i'm not sure - stupid idea - do not do just leaving here for later
+// TODO: need to refactor to zustand / jotai whichever is better
 
 // filter plan: save in state what we want to filter by -> default: nothing
 // after clicking it we need to pass something into the mapping function in home component that decides which players we show

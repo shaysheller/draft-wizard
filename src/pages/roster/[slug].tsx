@@ -323,7 +323,7 @@ const TeamRosterPage: NextPage<{ team: string }> = () => {
   );
 };
 
-const marginLeftSpacing = "ml-8";
+const leftAlignSpacing = "w-8";
 // could refactor this to take class constants as heigh variables probably prevent future problems
 const PlayerCard = (props: {
   position: string | undefined;
@@ -336,13 +336,19 @@ const PlayerCard = (props: {
     return (
       <div
         key={key}
-        className={`flex h-28 w-full items-center rounded-lg bg-red-200 text-center drop-shadow-md`}
+        className={` flex h-28 w-full items-center rounded-lg bg-red-200 text-center drop-shadow-md`}
       >
-        <div className=" flex w-1/5 text-left">
-          <span className={`${marginLeftSpacing}`}>{position}</span>
-          <button className="h-1/3 w-1/3 border bg-blue-200">XD</button>
+        <div className="flex h-24 w-full items-center">
+          <div className="flex w-1/6 text-left">
+            <div className={`${leftAlignSpacing}`}></div>
+            <span className="w-1/2">{position ? position : "BN"}</span>
+          </div>
+          <div>
+            <button className="h-1/3 border bg-blue-200">XD</button>
+          </div>
+          <div className="w-1/5"></div>
+          <span>Empty</span>
         </div>
-        <span>Empty</span>
       </div>
     );
 
@@ -356,8 +362,9 @@ const PlayerCard = (props: {
       className="h-28 w-full items-center rounded-lg bg-slate-50 text-center drop-shadow-md"
     >
       <div className="flex h-24 w-full items-center">
-        <div className="w-1/6 text-left">
-          <span className={`${marginLeftSpacing} w-1/2`}>{position}</span>
+        <div className="flex w-1/6 text-left">
+          <div className={`${leftAlignSpacing}`}></div>
+          <span className={`w-1/2`}>{position}</span>
         </div>
         <div>
           <button className="h-1/3 border bg-blue-200">XD</button>
@@ -383,10 +390,9 @@ const PlayerCard = (props: {
           </p>
         </div>
       </div>
-      <div className=" h-4 rounded-b-lg bg-slate-200 text-left opacity-30 ">
-        <span
-          className={`font-semi-bold ${marginLeftSpacing} align-top text-xs`}
-        >
+      <div className=" flex h-4 rounded-b-lg bg-slate-200 text-left opacity-30 ">
+        <div className={`${leftAlignSpacing}`}></div>
+        <span className={`font-semi-bold align-top text-xs`}>
           BYE: {player.bye}
         </span>
       </div>
