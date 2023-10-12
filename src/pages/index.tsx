@@ -17,6 +17,7 @@ import {
   undoPickFunction,
 } from "../context";
 import { DepthDropDown } from "~/components/depthDropDown";
+import { useAppStore } from "~/app-store";
 
 // TODO: need to redo the undo function to somehow give access to the player that was undone in the client so i can use it with the toaster message
 // TODO: want to implement infinite scrolling instead of just the click thing
@@ -36,6 +37,17 @@ type Player = RouterOutputs["player"]["getAll"][number];
 const Home: NextPage = () => {
   const { state, dispatch } = useContext(DraftContext);
   const [currentPositionFilter, setCurrentPositionFilter] = useState("ALL");
+  const pickedPlayers = useAppStore((state) => state.PickedPlayers);
+  const draftPick = useAppStore((state) => state.DraftPick);
+  const numRounds = useAppStore((state) => state.NumberOfRounds);
+  const rosters = useAppStore((state) => state.Rosters);
+  const addPlayerToSet = useAppStore((state) => state.addPlayerToSet);
+  const incrementPickNumber = useAppStore((state) => state.incrementPickNumber);
+  const decrementPickNumber = useAppStore((state) => state.decrementPickNumber);
+  const addPlayerToRoster = useAppStore((state) => state.addPlayerToRoster);
+  const pickNumber = useAppStore((state) => state.PickNumber);
+
+  console.log('current rosters: ', rosters);
 
   // might need to tinker with the refecth mechanics because it refetches every time i click back on to the page
   const { data, fetchNextPage, isLoading, isFetching, hasNextPage } =
@@ -53,7 +65,9 @@ const Home: NextPage = () => {
   const handlePlayerDraft = (player: Player) => {
     toast.dismiss();
     toast.success(`${player.name} successfully drafted!`);
-    dispatch(draftPlayerFunction(player)); // don't need curretnpick
+    addPlayerToSet(player);
+    incrementPickNumber();
+    addPlayerToRoster(player);// don't need curretnpick
   };
 
   const handleFilterChange = (selectedValue: string) => {
@@ -62,18 +76,19 @@ const Home: NextPage = () => {
 
   const handleUndo = () => {
     toast.dismiss();
-    if (state.PickedPlayers.size < 1)
+    if (pickedPlayers.size < 1)
       return toast.error("No players to undo. Please pick a player!");
-    dispatch(undoPickFunction());
+    decrementPickNumber();
     toast.success(`Successful undo!`);
   };
 
   return (
     <>
       <PageLayout>
-        {state.PickNumber === -1 && <Modal />}
+        {draftPick === -1 && <Modal />}
         {/* could add a toaster thing to alert the user that they have successfully submitted */}
         <div className="my-2 flex h-fit flex-col items-center justify-center">
+          <div>{pickNumber}</div>
           <div className="  flex">
             <DepthDropDown
               title={"DEPTH CHARTS"}
@@ -83,7 +98,7 @@ const Home: NextPage = () => {
             <DropDownMenu
               title={"ROSTERS"}
               urlParam={"roster"}
-              arr={Object.keys(state.Rosters)}
+              arr={Object.keys(rosters)}
             />
             <DropDownNoLink
               handleSelect={handleFilterChange}
@@ -94,8 +109,8 @@ const Home: NextPage = () => {
         </div>
 
         <div className="flex h-full w-full flex-col gap-4 overflow-y-auto">
-          {state.PickedPlayers.size >=
-          Object.keys(state.Rosters).length * state.NumberOfRounds ? (
+          {pickedPlayers.size >=
+          Object.keys(rosters).length * numRounds ? (
             <div>DRAFT OVER</div>
           ) : (
             <PlayerFeed
@@ -103,10 +118,10 @@ const Home: NextPage = () => {
                 data?.pages?.flatMap((page) =>
                   page.items.filter((player) => {
                     if (currentPositionFilter === "ALL")
-                      return !state.PickedPlayers.has(player.name);
+                      return !pickedPlayers.has(player.name);
                     else
                       return (
-                        !state.PickedPlayers.has(player.name) &&
+                        !pickedPlayers.has(player.name) &&
                         player.role === currentPositionFilter
                       );
                   })
@@ -132,7 +147,7 @@ const Home: NextPage = () => {
               )}
             </div>
             <div className="flex flex-1 items-center justify-center text-center">
-              <p>Pick: {state.PickedPlayers.size + 1}</p>
+              <p>Pick: {pickedPlayers.size + 1}</p>
             </div>
             <div className="flex-1">
               <button
@@ -201,19 +216,19 @@ const Player = (props: {
 
 // could make the wrapping of the modal more reusable and the internal contents more specific but idk if that is worth rn
 const Modal = () => {
-  const { dispatch } = useContext(DraftContext);
+  const setInitialDraftSettings = useAppStore((state) => state.setInitialDraftSettings)
   const numTeamsRef = useRef<HTMLInputElement>(null);
-  const pickNumberRef = useRef<HTMLInputElement>(null);
+  const draftPickRef = useRef<HTMLInputElement>(null);
   const draftRoundsRef = useRef<HTMLInputElement>(null);
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // might only be necessary for mobile? I was able to type letters in this field on my ipad
     const a = Number(numTeamsRef.current?.value);
-    const b = Number(pickNumberRef.current?.value);
+    const b = Number(draftPickRef.current?.value);
     if (isNaN(a) || isNaN(b)) {
       if (isNaN(a)) numTeamsRef.current?.focus();
-      if (isNaN(b)) pickNumberRef.current?.focus();
+      if (isNaN(b)) draftPickRef.current?.focus();
       return;
     }
 
@@ -222,11 +237,15 @@ const Modal = () => {
       return;
     }
 
+    if(a < 2) {
+      alert("Need at least 2 teams!");
+    }
+
     const numTeams = Number(numTeamsRef.current?.value);
-    const draftPick = Number(pickNumberRef.current?.value);
+    const draftPick = Number(draftPickRef.current?.value);
     const numRounds = Number(draftRoundsRef.current?.value);
 
-    dispatch(setInitialDraftSettings(numTeams, draftPick, numRounds));
+    setInitialDraftSettings(numTeams, draftPick, numRounds);
   };
 
   return createPortal(
@@ -267,7 +286,7 @@ const Modal = () => {
               type="number"
               min={1}
               max={16}
-              ref={pickNumberRef}
+              ref={draftPickRef}
             ></input>
           </div>
           <label
