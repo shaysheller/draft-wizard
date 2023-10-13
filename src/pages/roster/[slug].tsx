@@ -2,7 +2,6 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState, useMemo } from "react";
-import { DraftContext } from "~/context";
 import { type NextPage } from "next";
 import Link from "next/link";
 import teamsArr from "~/utils/teams";
@@ -16,7 +15,6 @@ type Player = RouterOutputs["player"]["getAll"][number];
 
 const TeamRosterPage: NextPage<{ team: string }> = () => {
   const router = useRouter();
-  const { state, dispatch } = useContext(DraftContext);
   const numberOfRounds = useAppStore((state) => state.NumberOfRounds);
   const rosters = useAppStore((state) => state.Rosters);
 
