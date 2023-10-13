@@ -6,48 +6,38 @@ import { PageLayout } from "~/components/layout";
 import teamsArr, { teamsUrls } from "~/utils/teams";
 import { positionColors } from "~/utils/positionColors";
 import { DropDownMenu } from "~/components/dropDown";
+import {Player} from '../utils/types'
 import { createPortal } from "react-dom";
-import { useContext, useRef, useState, useMemo, useEffect } from "react";
+import {  useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import { DropDownNoLink } from "~/components/dropDownNoLink";
-import {
-  DraftContext,
-  draftPlayerFunction,
-  setInitialDraftSettings,
-  undoPickFunction,
-} from "../context";
 import { DepthDropDown } from "~/components/depthDropDown";
 import { useAppStore } from "~/app-store";
 
-// TODO: need to redo the undo function to somehow give access to the player that was undone in the client so i can use it with the toaster message
 // TODO: want to implement infinite scrolling instead of just the click thing
 // TODO: fix routing or make it actually work the nextjs way
 // TODO: make a picked player list with same filters etc
 // TODO: return entire list of players by position so when i filter i can see all that i actually need and draft button still works same i think ?
-// TODO: I think I might not need to save everything in context if i just save everything in App.tsx i'm not sure - stupid idea - do not do just leaving here for later
-// TODO: need to refactor to zustand / jotai whichever is better
 
 // filter plan: save in state what we want to filter by -> default: nothing
 // after clicking it we need to pass something into the mapping function in home component that decides which players we show
 
 const positionArray = ["ALL", "WR", "RB", "QB", "TE", "DST", "K"];
 
-type Player = RouterOutputs["player"]["getAll"][number];
 
 const Home: NextPage = () => {
-  const { state, dispatch } = useContext(DraftContext);
   const [currentPositionFilter, setCurrentPositionFilter] = useState("ALL");
   const pickedPlayers = useAppStore((state) => state.PickedPlayers);
   const draftPick = useAppStore((state) => state.DraftPick);
   const numRounds = useAppStore((state) => state.NumberOfRounds);
   const rosters = useAppStore((state) => state.Rosters);
-  const addPlayerToSet = useAppStore((state) => state.addPlayerToSet);
+  const addPlayerToSet = useAppStore((state) => state.addPlayerToMap);
   const incrementPickNumber = useAppStore((state) => state.incrementPickNumber);
   const decrementPickNumber = useAppStore((state) => state.decrementPickNumber);
   const addPlayerToRoster = useAppStore((state) => state.addPlayerToRoster);
+  const undoPick = useAppStore((state) => state.undoPick);
   const pickNumber = useAppStore((state) => state.PickNumber);
 
-  console.log('current rosters: ', rosters);
 
   // might need to tinker with the refecth mechanics because it refetches every time i click back on to the page
   const { data, fetchNextPage, isLoading, isFetching, hasNextPage } =
@@ -79,7 +69,8 @@ const Home: NextPage = () => {
     if (pickedPlayers.size < 1)
       return toast.error("No players to undo. Please pick a player!");
     decrementPickNumber();
-    toast.success(`Successful undo!`);
+    const removedPlayer = undoPick();
+    toast.success(`${removedPlayer} successfully undone!`);
   };
 
   return (
