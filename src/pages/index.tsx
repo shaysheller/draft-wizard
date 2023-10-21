@@ -25,9 +25,7 @@ import { isInViewPort } from "~/utils/functions";
 
 // this is completely fucked and i'm pretty sure it has to do with server components and client components
 // above may still be fucekd but currently it's working so we move
-
-// TODO: MAYBE I HAVE ALL MY FEED LOGIC UNNECESSARILIY IN HOME?? COULD MOVE TO PLAYER FEED??
-// TODO: want to implement infinite scrolling instead of just the click thing
+// TODO: debounce / throttle the infinite scroll because I'm just chain fetching the entire time when the thing is in viewport
 // TODO: fix routing or make it actually work the nextjs way
 // TODO: make a picked player list with same filters etc
 // TODO: return entire list of players by position so when i filter i can see all that i actually need and draft button still works same i think ?

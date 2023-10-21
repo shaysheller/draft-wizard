@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import { positionColors } from "~/utils/positionColors";
 
 // may need to add debounce to this also may need to make it a client component idk
+// i think preventing check from running while isfetching or isloading (praise react query) solves
 export const PlayerFeed = (props: { currentPositionFilter: string }) => {
   const pickedPlayers = useAppStore((state) => state.PickedPlayers);
   const addPlayerToSet = useAppStore((state) => state.addPlayerToMap);
@@ -27,6 +28,7 @@ export const PlayerFeed = (props: { currentPositionFilter: string }) => {
       }
     );
   const check = () => {
+    if (isFetching || isLoading) return;
     if (lastPlayerRef?.current !== null) {
       if (isInViewPort(lastPlayerRef.current)) {
         hasNextPage ? fetchNextPage().catch((err) => console.error(err)) : null;
@@ -38,6 +40,7 @@ export const PlayerFeed = (props: { currentPositionFilter: string }) => {
     return <LoadingPage />;
 
   const handlePlayerDraft = (player: Player) => {
+    check();
     toast.dismiss();
     toast.success(`${player.name} successfully drafted!`);
     addPlayerToSet(player);

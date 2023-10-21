@@ -1,4 +1,3 @@
-
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState, useMemo } from "react";
@@ -93,8 +92,8 @@ const TeamRosterPage: NextPage<{ team: string }> = () => {
       <Head>
         <title>{`Team ${router.query.slug?.toString()} Current Roster`}</title>
       </Head>
-      <div className="flex w-full justify-center">
-        <div className=" flex w-full flex-col items-center justify-center md:max-w-2xl">
+      <div className="flex w-full justify-center overflow-y-auto">
+        <div className=" flex w-full flex-col items-center  md:max-w-2xl">
           <div>Team {router.query.slug}</div>
 
           <DropDownMenu
