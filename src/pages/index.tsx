@@ -2,7 +2,7 @@ import { type NextPage } from "next";
 import teamsArr, { teamsUrls } from "~/utils/teams";
 import { PlayerFeed } from "~/components/PlayerFeed";
 import { DropDownMenu } from "~/components/dropDown";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { toast } from "react-hot-toast";
 import { DropDownNoLink } from "~/components/dropDownNoLink";
 import { DepthDropDown } from "~/components/depthDropDown";
@@ -50,6 +50,7 @@ const Home: NextPage = () => {
   const rosters = useAppStore((state) => state.Rosters);
   const decrementPickNumber = useAppStore((state) => state.decrementPickNumber);
   const undoPick = useAppStore((state) => state.undoPick);
+  const firstPlayerRef = useRef<HTMLDivElement>(null);
   const setInitialDraftSettings = useAppStore(
     (state) => state.setInitialDraftSettings
   );
@@ -71,13 +72,19 @@ const Home: NextPage = () => {
     toast.success(`${removedPlayer} successfully undone!`);
   };
 
+  const scrollToTop = () => {
+    firstPlayerRef?.current?.scrollIntoView({
+      behavior: "smooth",
+    });
+  };
+
   // if (draftPick === -1) return <Modal />;
 
   return (
     <>
       {/* {draftPick === -1 && <Modal />} */}
 
-      {/* <div className="my-2 flex h-fit flex-none items-center justify-center">
+      <div className="my-2 flex h-fit flex-none items-center justify-center">
         <DepthDropDown
           title={"DEPTH CHARTS"}
           urlArray={teamsUrls}
@@ -93,20 +100,21 @@ const Home: NextPage = () => {
           title={"POSITION"}
           arr={positionArray}
         />
-      </div> */}
-      <PlayerFeed currentPositionFilter={currentPositionFilter} />
+      </div>
+      <PlayerFeed
+        ref={firstPlayerRef}
+        currentPositionFilter={currentPositionFilter}
+      />
       <div className="flex h-fit w-full flex-col items-center justify-center text-center">
         <div className="flex w-full gap-2 pt-4 text-center">
           <div className="flex flex-1 items-center justify-center text-center">
             <p>Pick: {pickedPlayers.size + 1}</p>
           </div>
           <div className="flex-1">
-            <button
-              className="h-fit rounded border border-blue-500 px-4 py-2 font-bold text-blue-500 hover:border-blue-700 hover:text-blue-700"
-              onClick={() => handleUndo()}
-            >
-              UNDO
-            </button>
+            <Button filled={false} text={"VIEW TOP"} onClick={scrollToTop} />
+          </div>
+          <div className="flex-1">
+            <Button filled={false} text={"UNDO"} onClick={handleUndo} />
           </div>
         </div>
 

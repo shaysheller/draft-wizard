@@ -1,6 +1,6 @@
 "use client";
 import { Player, useAppStore } from "~/app-store";
-import { useRef, forwardRef, type LegacyRef } from "react";
+import { useRef, forwardRef, type LegacyRef, Ref } from "react";
 import { Button } from "~/components/button";
 import { isInViewPort } from "~/utils/functions";
 import { api } from "~/utils/api";
@@ -8,7 +8,12 @@ import { LoadingPage } from "./loading";
 import toast from "react-hot-toast";
 import { positionColors } from "~/utils/positionColors";
 
-export const PlayerFeed = (props: { currentPositionFilter: string }) => {
+// TODO: implement jump to top button at the bottom
+
+export const PlayerFeed = forwardRef(function PlayerFeed(
+  props: { currentPositionFilter: string },
+  ref: LegacyRef<HTMLDivElement> | undefined
+) {
   const pickedPlayers = useAppStore((state) => state.PickedPlayers);
   const addPlayerToSet = useAppStore((state) => state.addPlayerToMap);
   const incrementPickNumber = useAppStore((state) => state.incrementPickNumber);
@@ -76,16 +81,25 @@ export const PlayerFeed = (props: { currentPositionFilter: string }) => {
           })
         )
         .map((player, index, arr) => (
+          // if it's the first player in the array - ref that player
+          // if it's the last player in the array - ref that player
           <Player
             player={player}
             key={player.name}
             handlePlayerDraft={handlePlayerDraft}
-            ref={index === arr.length - 1 ? lastPlayerRef : null}
+            // ref={index === arr.length - 1 ? lastPlayerRef : null}
+            ref={
+              index === 0
+                ? (ref as Ref<HTMLDivElement>)
+                : index === arr.length - 1
+                ? lastPlayerRef
+                : null
+            }
           />
         ))}
     </div>
   );
-};
+});
 
 const Player = forwardRef(function Player(
   props: {
