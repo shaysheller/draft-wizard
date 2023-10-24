@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useContext, useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { type NextPage } from "next";
 import Link from "next/link";
 import teamsArr from "~/utils/teams";

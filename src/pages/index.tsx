@@ -1,31 +1,19 @@
-import { api } from "~/utils/api";
 import { type NextPage } from "next";
-import { LoadingPage, LoadingSpinner } from "~/components/loading";
 import teamsArr, { teamsUrls } from "~/utils/teams";
-import { positionColors } from "~/utils/positionColors";
 import { PlayerFeed } from "~/components/PlayerFeed";
 import { DropDownMenu } from "~/components/dropDown";
-import { Player } from "../utils/types";
-import { createPortal } from "react-dom";
-import { useRef, useState, useEffect, forwardRef, LegacyRef } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { DropDownNoLink } from "~/components/dropDownNoLink";
 import { DepthDropDown } from "~/components/depthDropDown";
 import { useAppStore } from "~/app-store";
 import { Modal } from "~/components/Modal";
-import { isInViewPort } from "~/utils/functions";
+import { Button } from "~/components/button";
+import { Footer } from "~/components/footer";
 
-/*
-  I think we need to attach a ref to the final element in the list 
-  then on scroll we can check if it's in view
-  if it is in view then we must refetch the next ~10 items
-
-
-*/
-
-// this is completely fucked and i'm pretty sure it has to do with server components and client components
-// above may still be fucekd but currently it's working so we move
-// TODO: debounce / throttle the infinite scroll because I'm just chain fetching the entire time when the thing is in viewport
+// TODO: change the styling to reusable components that all have the same color scheme - mostly the buttons need to be fixed imo
+// TODO: could try to implement some kind of drag and drop to display certain rosters? - this is new goal
+// TODO: learn about websockets and let people join their draft? - fucked without express server I think
 // TODO: fix routing or make it actually work the nextjs way
 // TODO: make a picked player list with same filters etc
 // TODO: return entire list of players by position so when i filter i can see all that i actually need and draft button still works same i think ?
@@ -33,16 +21,42 @@ import { isInViewPort } from "~/utils/functions";
 // filter plan: save in state what we want to filter by -> default: nothing
 // after clicking it we need to pass something into the mapping function in home component that decides which players we show
 
+/*
+  *** I'm pretty sure this plan is fucked unless I set up another server because Next.js is serverless by default potentially *** 
+  TODO: web socket plan:
+  I'm assuming I would need to save the teams and drafted players in a db, not sure how to deal with the possibility of 
+  thousands of users using the website at once but we will cross that bridge when we get there
+
+  need to have a draft "key" to join a room - need to have each player choose their pick # and remove it from teh available picks
+  once it's taken
+
+  possibly require them to choose a name but I'm not too sure on this one
+
+  only let them pick a player when it's their turn to draft
+
+  this may be the ideal time to move everything from zustand to the server
+  technically wouldn't need to do this, could just broadcast which player was picked then everyone's client could independently update
+  and keep track of state locally
+
+
+
+*/
+
 const positionArray = ["ALL", "WR", "RB", "QB", "TE", "DST", "K"];
 
 const Home: NextPage = () => {
   const [currentPositionFilter, setCurrentPositionFilter] = useState("ALL");
   const pickedPlayers = useAppStore((state) => state.PickedPlayers);
-  const draftPick = useAppStore((state) => state.DraftPick);
   const rosters = useAppStore((state) => state.Rosters);
   const decrementPickNumber = useAppStore((state) => state.decrementPickNumber);
   const undoPick = useAppStore((state) => state.undoPick);
-  const pickNumber = useAppStore((state) => state.PickNumber);
+  const setInitialDraftSettings = useAppStore(
+    (state) => state.setInitialDraftSettings
+  );
+
+  useEffect(() => {
+    setInitialDraftSettings(12, 12, 15);
+  }, [setInitialDraftSettings]);
 
   const handleFilterChange = (selectedValue: string) => {
     setCurrentPositionFilter(selectedValue);
@@ -57,35 +71,32 @@ const Home: NextPage = () => {
     toast.success(`${removedPlayer} successfully undone!`);
   };
 
+  // if (draftPick === -1) return <Modal />;
+
   return (
     <>
-      {draftPick === -1 && <Modal />}
-      {/* could add a toaster thing to alert the user that they have successfully submitted */}
-      <div className="my-2 flex h-fit flex-col items-center justify-center">
-        <div>{pickNumber}</div>
-        <div className="  flex">
-          <DepthDropDown
-            title={"DEPTH CHARTS"}
-            urlArray={teamsUrls}
-            arr={teamsArr}
-          />
-          <DropDownMenu
-            title={"ROSTERS"}
-            urlParam={"roster"}
-            arr={Object.keys(rosters)}
-          />
-          <DropDownNoLink
-            handleSelect={handleFilterChange}
-            title={"POSITION"}
-            arr={positionArray}
-          />
-        </div>
-      </div>
+      {/* {draftPick === -1 && <Modal />} */}
 
+      {/* <div className="my-2 flex h-fit flex-none items-center justify-center">
+        <DepthDropDown
+          title={"DEPTH CHARTS"}
+          urlArray={teamsUrls}
+          arr={teamsArr}
+        />
+        <DropDownMenu
+          title={"ROSTERS"}
+          urlParam={"roster"}
+          arr={Object.keys(rosters)}
+        />
+        <DropDownNoLink
+          handleSelect={handleFilterChange}
+          title={"POSITION"}
+          arr={positionArray}
+        />
+      </div> */}
       <PlayerFeed currentPositionFilter={currentPositionFilter} />
-
-      <div className="flex h-1/4 w-full flex-col items-center justify-center text-center">
-        <div className="flex w-full gap-2 text-center">
+      <div className="flex h-fit w-full flex-col items-center justify-center text-center">
+        <div className="flex w-full gap-2 pt-4 text-center">
           <div className="flex flex-1 items-center justify-center text-center">
             <p>Pick: {pickedPlayers.size + 1}</p>
           </div>
@@ -99,7 +110,7 @@ const Home: NextPage = () => {
           </div>
         </div>
 
-        <footer className="">In the Lab</footer>
+        <Footer />
       </div>
     </>
   );
