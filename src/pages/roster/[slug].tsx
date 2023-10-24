@@ -97,11 +97,6 @@ const TeamRosterPage: NextPage<{ team: string }> = () => {
           <div>Team {router.query.slug}</div>
 
           <DropDownMenu
-            title={"DEPTH CHARTS"}
-            urlParam={"depth"}
-            arr={teamsArr}
-          />
-          <DropDownMenu
             title={"VIEW ROSTERS"}
             urlParam={"roster"}
             arr={Object.keys(rosters)}
@@ -137,7 +132,6 @@ const TeamRosterPage: NextPage<{ team: string }> = () => {
                 );
             })}
           </div>
-          <Link href="/">HOME</Link>
         </div>
       </div>
     </>

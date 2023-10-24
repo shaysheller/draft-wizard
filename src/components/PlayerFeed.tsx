@@ -1,6 +1,6 @@
 "use client";
 import { Player, useAppStore } from "~/app-store";
-import { useRef, forwardRef, type LegacyRef, Ref } from "react";
+import { useRef, forwardRef, type LegacyRef, type Ref } from "react";
 import { Button } from "~/components/button";
 import { isInViewPort } from "~/utils/functions";
 import { api } from "~/utils/api";
@@ -40,7 +40,7 @@ export const PlayerFeed = forwardRef(function PlayerFeed(
     }
   };
 
-  if (!data) {
+  if (!data || Object.keys(rosters).length * numRounds < 1) {
     return (
       <div className="flex-1">
         <LoadingPage />

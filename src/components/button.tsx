@@ -1,8 +1,10 @@
+import { type RefObject } from "react";
+
 export const Button = (props: {
   filled: boolean;
   text: string;
   textSize?: string;
-  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  onClick: () => void;
 }) => {
   let textColor;
   let hoverTextColor;

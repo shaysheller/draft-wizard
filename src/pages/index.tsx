@@ -9,12 +9,17 @@ import { DepthDropDown } from "~/components/depthDropDown";
 import { useAppStore } from "~/app-store";
 import { Modal } from "~/components/Modal";
 import { Button } from "~/components/button";
+import { scrollToTop } from "~/utils/functions";
 import { Footer } from "~/components/footer";
 
+// TODO: make it all work on a server instead of on one client only
 // TODO: change the styling to reusable components that all have the same color scheme - mostly the buttons need to be fixed imo
 // TODO: could try to implement some kind of drag and drop to display certain rosters? - this is new goal
+// i think it's best to start with drag and drop for players between rosters
+// might be kind of dumb to do it though because most of the apps i use don't even work like this
 // TODO: learn about websockets and let people join their draft? - fucked without express server I think
-// TODO: fix routing or make it actually work the nextjs way
+// TODO: fix routing or make it actually work the nextjs way - make it so we actually ssr
+
 // TODO: make a picked player list with same filters etc
 // TODO: return entire list of players by position so when i filter i can see all that i actually need and draft button still works same i think ?
 
@@ -50,14 +55,17 @@ const Home: NextPage = () => {
   const rosters = useAppStore((state) => state.Rosters);
   const decrementPickNumber = useAppStore((state) => state.decrementPickNumber);
   const undoPick = useAppStore((state) => state.undoPick);
+  const draftPick = useAppStore((state) => state.DraftPick);
   const firstPlayerRef = useRef<HTMLDivElement>(null);
-  const setInitialDraftSettings = useAppStore(
-    (state) => state.setInitialDraftSettings
-  );
 
-  useEffect(() => {
-    setInitialDraftSettings(12, 12, 15);
-  }, [setInitialDraftSettings]);
+  // don't delete these this is to avoid the modal while testing things
+  // const setInitialDraftSettings = useAppStore(
+  //   (state) => state.setInitialDraftSettings
+  // );
+
+  // useEffect(() => {
+  //   setInitialDraftSettings(12, 12, 15);
+  // }, [setInitialDraftSettings]);
 
   const handleFilterChange = (selectedValue: string) => {
     setCurrentPositionFilter(selectedValue);
@@ -72,17 +80,11 @@ const Home: NextPage = () => {
     toast.success(`${removedPlayer} successfully undone!`);
   };
 
-  const scrollToTop = () => {
-    firstPlayerRef?.current?.scrollIntoView({
-      behavior: "smooth",
-    });
-  };
-
   // if (draftPick === -1) return <Modal />;
 
   return (
     <>
-      {/* {draftPick === -1 && <Modal />} */}
+      {draftPick === -1 && <Modal />}
 
       <div className="my-2 flex h-fit flex-none items-center justify-center">
         <DepthDropDown
@@ -111,14 +113,16 @@ const Home: NextPage = () => {
             <p>Pick: {pickedPlayers.size + 1}</p>
           </div>
           <div className="flex-1">
-            <Button filled={false} text={"VIEW TOP"} onClick={scrollToTop} />
+            <Button
+              filled={false}
+              text={"VIEW TOP"}
+              onClick={() => scrollToTop(firstPlayerRef)}
+            />
           </div>
           <div className="flex-1">
-            <Button filled={false} text={"UNDO"} onClick={handleUndo} />
+            <Button filled={false} text={"UNDO"} onClick={() => handleUndo()} />
           </div>
         </div>
-
-        <Footer />
       </div>
     </>
   );

@@ -1,3 +1,5 @@
+import { type RefObject } from "react";
+
 export const isInViewPort = (element: HTMLDivElement) => {
   const bounding = element.getBoundingClientRect();
 
@@ -15,4 +17,10 @@ export const isInViewPort = (element: HTMLDivElement) => {
     console.log("Not in the viewport. :(");
     return false;
   }
+};
+
+export const scrollToTop = (ref: RefObject<HTMLDivElement>) => {
+  ref?.current?.scrollIntoView({
+    behavior: "smooth",
+  });
 };

@@ -1,5 +1,6 @@
 import type { PropsWithChildren } from "react";
 import { NavItems } from "~/components/navItems";
+import { Footer } from "~/components/footer";
 
 export const PageLayout = (props: PropsWithChildren) => {
   return (
@@ -7,6 +8,7 @@ export const PageLayout = (props: PropsWithChildren) => {
       <div className="flex h-full w-full flex-col items-center justify-center overflow-hidden border-x border-slate-400 md:max-w-2xl">
         <header className=" h-fit w-full">{<NavItems />}</header>
         {props.children}
+        <Footer />
       </div>
     </main>
   );

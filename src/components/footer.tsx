@@ -1,3 +1,3 @@
 export const Footer = () => {
-  return <footer className="pb-2 text-center">Shaaaay Productions</footer>;
+  return <footer className="py-2 text-center">Shaaaay Productions</footer>;
 };
