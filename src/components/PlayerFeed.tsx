@@ -125,7 +125,7 @@ const Player = forwardRef(function Player(
       <span className="w-1/6 text-2xl">Bye: {player.bye}</span>
       <span className="w-1/6 text-2xl">ADP: {player.adp}</span>
       <Button
-        onClick={(e) => handlePlayerDraft(player)}
+        onClick={() => handlePlayerDraft(player)}
         text="draft"
         textSize="text-sm"
         filled={true}

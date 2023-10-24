@@ -1,5 +1,3 @@
-import { type RefObject } from "react";
-
 export const Button = (props: {
   filled: boolean;
   text: string;
