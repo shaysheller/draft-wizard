@@ -15,7 +15,7 @@ import {
   type ReactPortal,
   useCallback,
 } from "react";
-import { Button } from "~/components/button";
+import { FilledButton, UnfilledButton } from "~/components/button";
 import { isInViewPort } from "~/utils/functions";
 import { api } from "~/utils/api";
 import { LoadingPage } from "~/components/loading";
@@ -125,14 +125,13 @@ const Home: NextPage = () => {
             <p>Pick: {pickedPlayers.size + 1}</p>
           </div>
           <div className="flex-1">
-            <Button
-              filled={false}
+            <UnfilledButton
               text={"VIEW TOP"}
               onClick={() => scrollToTop(firstPlayerRef)}
             />
           </div>
           <div className="flex-1">
-            <Button filled={false} text={"UNDO"} onClick={() => handleUndo()} />
+            <FilledButton text={"UNDO"} onClick={() => handleUndo()} />
           </div>
         </div>
       </div>
@@ -253,11 +252,10 @@ const Player = forwardRef(function Player(
       <span className="w-1/6 text-2xl">{player.team}</span>
       <span className="w-1/6 text-2xl">Bye: {player.bye}</span>
       <span className="w-1/6 text-2xl">ADP: {player.adp}</span>
-      <Button
+      <FilledButton
         onClick={() => handlePlayerDraft(player)}
         text="draft"
         textSize="text-sm"
-        filled={true}
       />
     </div>
   );
@@ -360,12 +358,14 @@ const Modal = () => {
               ref={draftRoundsRef}
             ></input>
             <div className="h-4"></div>
-            <button
-              className="focus:shadow-outline w-full rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700 focus:outline-none"
-              type="submit"
-            >
-              SUBMIT
-            </button>
+            <div className="flex justify-center">
+              <FilledButton
+                text={"submit"}
+                onClick={() => {
+                  return "";
+                }}
+              />
+            </div>
           </form>
         </div>
       </div>,
@@ -395,3 +395,5 @@ export default Home;
 
 
 */
+
+// TODO: Formdata?
