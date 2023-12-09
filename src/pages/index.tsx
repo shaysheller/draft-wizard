@@ -23,6 +23,10 @@ import toast from "react-hot-toast";
 import { positionColors } from "~/utils/positionColors";
 import { createPortal } from "react-dom";
 
+// TODO: add unit test to make sure my pick order thing works
+// TODO: add unit test to make sure that the player goes to correct team when drafted
+// TODO: add unit test to test undo
+
 // TODO: somehow make it so when i leave the home page and scroll down i will return to the spot i scrolled to
 // TODO: make it all work on a server instead of on one client only - honestly pretty sure react query could solve all the state management
 // TODO: change the styling to reusable components that all have the same color scheme - mostly the buttons need to be fixed imo
