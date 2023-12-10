@@ -33,7 +33,7 @@ import { createPortal } from "react-dom";
 // TODO: could try to implement some kind of drag and drop to display certain rosters? - this is new goal
 // i think it's best to start with drag and drop for players between rosters
 // might be kind of dumb to do it though because most of the apps i use don't even work like this
-// TODO: learn about websockets and let people join their draft? - fucked without express server I think
+
 // TODO: fix routing or make it actually work the nextjs way - make it so we actually ssr
 
 // TODO: make a picked player list with same filters etc
