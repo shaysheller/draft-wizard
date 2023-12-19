@@ -22,6 +22,7 @@ import { LoadingPage } from "~/components/loading";
 import toast from "react-hot-toast";
 import { positionColors } from "~/utils/positionColors";
 import { createPortal } from "react-dom";
+import { EntryLayout } from "~/layouts/entryLayout";
 
 // TODO: I want to add the thing where I can keep track of everyone's points / record in fantasy and then auto
 // update the standings without me having to rearrange
@@ -67,14 +68,34 @@ import { createPortal } from "react-dom";
 
 const positionArray = ["ALL", "WR", "RB", "QB", "TE", "DST", "K"];
 
+const filler = () => {
+  console.log("clicked");
+};
+
 const Home: NextPage = () => {
   return (
-    <div className="h-full w-full bg-red-600 bg-opacity-20">
-      <div className="flex h-full items-center justify-center bg-purple-100">
-        <p>View Standings</p>
-        <p>Enter Draft</p>
+    <EntryLayout>
+      <div className="h-full w-full overflow-hidden">
+        <div className="absolute inset-x-0 -z-10 flex h-full items-center justify-center overflow-hidden bg-violet-500 blur-3xl"></div>
+        <div className="flex h-full  flex-col items-center justify-center">
+          <h1 className="text-5xl font-bold tracking-tight text-gray-900">
+            All Your Fantasy Needs
+          </h1>
+          <p className="mt-4 text-lg leading-8 text-gray-600">
+            Draft your team or update standings
+          </p>
+          <div className="mt-6 flex gap-4">
+            <FilledButton
+              text={"Draft"}
+              onClick={() => filler()}
+              color={"bg-red-500"}
+              border={"border-red-500"}
+            />
+            <UnfilledButton text={"View Standings"} onClick={() => filler()} />
+          </div>
+        </div>
       </div>
-    </div>
+    </EntryLayout>
   );
 };
 

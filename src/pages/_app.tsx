@@ -3,7 +3,7 @@ import { api } from "~/utils/api";
 import "~/styles/globals.css";
 import Head from "next/head";
 import { Toaster } from "react-hot-toast";
-import { PageLayout } from "~/components/layout";
+import { PageLayout } from "~/layouts/layout";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
@@ -19,9 +19,9 @@ const MyApp: AppType = ({ Component, pageProps }) => {
           duration: 2000,
         }}
       />
-      <PageLayout>
-        <Component {...pageProps} />
-      </PageLayout>
+      {/* <PageLayout> */}
+      <Component {...pageProps} />
+      {/* </PageLayout> */}
     </>
   );
 };
