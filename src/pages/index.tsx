@@ -23,6 +23,8 @@ import toast from "react-hot-toast";
 import { positionColors } from "~/utils/positionColors";
 import { createPortal } from "react-dom";
 
+// TODO: I want to add the thing where I can keep track of everyone's points / record in fantasy and then auto
+// update the standings without me having to rearrange
 // TODO: add unit test to make sure my pick order thing works
 // TODO: add unit test to make sure that the player goes to correct team when drafted
 // TODO: add unit test to test undo
@@ -66,6 +68,17 @@ import { createPortal } from "react-dom";
 const positionArray = ["ALL", "WR", "RB", "QB", "TE", "DST", "K"];
 
 const Home: NextPage = () => {
+  return (
+    <div className="h-full w-full bg-red-600 bg-opacity-20">
+      <div className="flex h-full items-center justify-center bg-purple-100">
+        <p>View Standings</p>
+        <p>Enter Draft</p>
+      </div>
+    </div>
+  );
+};
+
+const Draft: NextPage = () => {
   const [currentPositionFilter, setCurrentPositionFilter] = useState("ALL");
   const pickedPlayers = useAppStore((state) => state.PickedPlayers);
   const rosters = useAppStore((state) => state.Rosters);
