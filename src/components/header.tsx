@@ -8,29 +8,37 @@ export const Header = () => {
 export const NavItems = () => {
   const draftPick = useAppStore((state) => state.DraftPick);
   return (
-    <ul className=" flex w-full justify-between bg-violet-500 font-bold text-white ">
-      <li></li>
-      <li>
-        <Link className="hover:underline" href={`/`}>
-          HOME
-        </Link>
-      </li>
-      <li>
-        <Link className="hover:underline" href={`/roster/${draftPick}`}>
-          ROSTERS
-        </Link>
-      </li>
-      <li>
-        <Link className="hover:underline" href={`/`}>
-          DEPTH CHARTS
-        </Link>
-      </li>
-      <li>
-        <Link className="hover:underline" href={`/about/`}>
-          ABOUT
-        </Link>
-      </li>
-      <li></li>
-    </ul>
+    <>
+      <div className="h-4"></div>
+      <ul className="sticky top-4 z-50 flex w-full justify-between  text-gray-900 ">
+        <li></li>
+        <li>
+          <Link className="hover:underline" href={`/`}>
+            HOME
+          </Link>
+        </li>
+        <li>
+          <Link className="hover:underline" href={`/draft`}>
+            DRAFT
+          </Link>
+        </li>
+        <li>
+          <Link className="hover:underline" href={`/roster/${draftPick}`}>
+            ROSTERS
+          </Link>
+        </li>
+        <li>
+          <Link className="hover:underline" href={`/standings`}>
+            STANDINGS
+          </Link>
+        </li>
+        <li>
+          <Link className="hover:underline" href={`/about/`}>
+            ABOUT
+          </Link>
+        </li>
+        <li></li>
+      </ul>
+    </>
   );
 };

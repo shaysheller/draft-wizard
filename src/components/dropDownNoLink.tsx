@@ -2,7 +2,7 @@ import { Menu, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import Link from "next/link";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
-import { forwardRef, type Ref } from "react";
+import { forwardRef, useState, type Ref } from "react";
 
 export const DropDownNoLink = (props: {
   title: string;
@@ -12,11 +12,17 @@ export const DropDownNoLink = (props: {
   let dropDownHeight;
   if (props.arr.length < 6) dropDownHeight = "h-fit";
   else dropDownHeight = "h-48";
+  const [selectedValue, setSelectedValue] = useState("ALL");
+
+  const handleSelect = (selectedValue: string) => {
+    props.handleSelect(selectedValue);
+    setSelectedValue(selectedValue);
+  };
   return (
     <div>
       <Menu as="div" className="relative inline-block text-left">
         <Menu.Button className="inline-flex  rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
-          <span>{props.title}</span>
+          <span>{selectedValue}</span>
           <ChevronDownIcon
             className="h-5 w-5 text-violet-400 hover:text-violet-100"
             aria-hidden="true"
@@ -40,7 +46,7 @@ export const DropDownNoLink = (props: {
                   <Menu.Item key={item}>
                     {({ active }) => (
                       <button
-                        onClick={() => props.handleSelect(item)}
+                        onClick={() => handleSelect(item)}
                         className={`${
                           active ? "bg-violet-500 text-white" : "text-gray-900"
                         } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
