@@ -1,5 +1,5 @@
 const Standings = () => {
-  return <div>standings</div>;
+  return <div className="h-full">standings</div>;
 };
 
 export default Standings;

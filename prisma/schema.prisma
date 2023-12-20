@@ -21,7 +21,6 @@ model Player {
   bye       Int     @default(-1)
 }
 
-
 enum Position {
   QB
   WR

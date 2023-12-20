@@ -26,6 +26,10 @@ import { EntryLayout } from "~/layouts/entryLayout";
 import { DraftLayout } from "~/layouts/draftLayout";
 const positionArray = ["ALL", "WR", "RB", "QB", "TE", "DST", "K"];
 
+// filter doesn't work when need to load more X position and the tracker doesnt hit the bott omfo the page
+// example -> only ahve 2 qb's loaded and I switch filter to QB the tracker doesn't reach because there's only 2 of them
+// probably need to change the scan function to check if it's way above the end point or something
+
 const Draft = () => {
   const [currentPositionFilter, setCurrentPositionFilter] = useState("ALL");
   const pickedPlayers = useAppStore((state) => state.PickedPlayers);
