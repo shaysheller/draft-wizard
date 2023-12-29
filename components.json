@@ -7,7 +7,8 @@
     "config": "tailwind.config.js",
     "css": "/Users/user/Code/draft-wizard/src/styles/globals.css",
     "baseColor": "slate",
-    "cssVariables": true
+    "cssVariables": false,
+    "prefix": ""
   },
   "aliases": {
     "components": "@/components",
