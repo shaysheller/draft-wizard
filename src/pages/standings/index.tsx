@@ -1,82 +1,105 @@
 import { useState, useRef, MutableRefObject } from "react";
 import { type FormEvent } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { api } from "~/utils/api";
+import { LoadingSpinner } from "~/components/loading";
 
 // const addTeam = (teamName: string, realName: string) => {
 //   api.team.postTeam.mutate()
 // };
 
+// const Standings = () => {
+//   const { mutate, isLoading } = api.team.postTeam.useMutation({
+//     onSuccess: () => {
+//       setTeamName("");
+//       setRealName("");
+//       setPointsAgainst("");
+//       setPointsFor("");
+//       setWins("");
+//       setLosses("");
+//     },
+//   });
+
+//   const [teamName, setTeamName] = useState("");
+//   const [realName, setRealName] = useState("");
+//   const [pointsFor, setPointsFor] = useState("");
+//   const [pointsAgainst, setPointsAgainst] = useState("");
+//   const [wins, setWins] = useState("");
+//   const [losses, setLosses] = useState("");
+//   const focusRef = useRef<HTMLInputElement | null>(null);
+//   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+//     e.preventDefault();
+//     if (focusRef.current) focusRef.current.focus();
+
+//     mutate({ realName, teamName, pointsFor, pointsAgainst, wins, losses });
+//   };
+
+//   return (
+//     <form
+//       onSubmit={(e) => onSubmit(e)}
+//       className="flex h-full w-full flex-col items-center justify-center bg-red-200"
+//     >
+//       <input
+//         ref={focusRef}
+//         name="teamName"
+//         placeholder="team name"
+//         onChange={(e) => setTeamName(() => e.target.value)}
+//         value={teamName}
+//       />
+//       <input
+//         name="realName"
+//         placeholder="real name"
+//         value={realName}
+//         onChange={(e) => setRealName(() => e.target.value)}
+//       />
+//       <input
+//         name="pointsFor"
+//         placeholder="points for"
+//         value={pointsFor}
+//         onChange={(e) => setPointsFor(() => e.target.value)}
+//       />
+//       <input
+//         name="pointsAgainst"
+//         placeholder="points against"
+//         value={pointsAgainst}
+//         onChange={(e) => setPointsAgainst(() => e.target.value)}
+//       />
+//       <input
+//         name="wins"
+//         placeholder="wins"
+//         value={wins}
+//         onChange={(e) => setWins(() => e.target.value)}
+//       />
+//       <input
+//         name="losses"
+//         placeholder="losses"
+//         value={losses}
+//         onChange={(e) => setLosses(() => e.target.value)}
+//       />
+//       <button type="submit">Submit</button>
+//     </form>
+//   );
+// };
+
 const Standings = () => {
-  const { mutate, isLoading } = api.team.postTeam.useMutation({
-    onSuccess: () => {
-      setTeamName("");
-      setRealName("");
-      setPointsAgainst("");
-      setPointsFor("");
-      setWins("");
-      setLosses("");
-    },
-  });
-
-  const [teamName, setTeamName] = useState("");
-  const [realName, setRealName] = useState("");
-  const [pointsFor, setPointsFor] = useState("");
-  const [pointsAgainst, setPointsAgainst] = useState("");
-  const [wins, setWins] = useState("");
-  const [losses, setLosses] = useState("");
-  const focusRef = useRef<HTMLInputElement | null>(null);
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (focusRef.current) focusRef.current.focus();
-
-    mutate({ realName, teamName, pointsFor, pointsAgainst, wins, losses });
-  };
-
+  const { data, isLoading } = api.team.getAll.useQuery();
+  if (isLoading) return <LoadingSpinner />;
   return (
-    <form
-      onSubmit={(e) => onSubmit(e)}
-      className="flex h-full w-full flex-col items-center justify-center bg-red-200"
-    >
-      <input
-        ref={focusRef}
-        name="teamName"
-        placeholder="team name"
-        onChange={(e) => setTeamName(() => e.target.value)}
-        value={teamName}
-      />
-      <input
-        name="realName"
-        placeholder="real name"
-        value={realName}
-        onChange={(e) => setRealName(() => e.target.value)}
-      />
-      <input
-        name="pointsFor"
-        placeholder="points for"
-        value={pointsFor}
-        onChange={(e) => setPointsFor(() => e.target.value)}
-      />
-      <input
-        name="pointsAgainst"
-        placeholder="points against"
-        value={pointsAgainst}
-        onChange={(e) => setPointsAgainst(() => e.target.value)}
-      />
-      <input
-        name="wins"
-        placeholder="wins"
-        value={wins}
-        onChange={(e) => setWins(() => e.target.value)}
-      />
-      <input
-        name="losses"
-        placeholder="losses"
-        value={losses}
-        onChange={(e) => setLosses(() => e.target.value)}
-      />
-      <button type="submit">Submit</button>
-    </form>
+    <div className="flex w-full flex-col overflow-y-scroll bg-red-200 text-center">
+      {data?.map((a) => {
+        const { teamName, name, wins, losses, pointsFor, pointsAgainst } = a;
+        return (
+          <div className="" key={a.id}>
+            <div>Team Name: {teamName}</div>
+            <div>Name: {name}</div>
+            <div>Wins: {wins}</div>
+            <div>Losses: {losses}</div>
+            <div>Points For: {pointsFor}</div>
+            <div>Points Against: {pointsAgainst}</div>
+          </div>
+        );
+      })}
+    </div>
   );
 };
 

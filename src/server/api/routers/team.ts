@@ -32,4 +32,12 @@ export const teamRouter = createTRPCRouter({
       });
       return "dearlord";
     }),
+
+  getAll: publicProcedure.query(async ({ ctx }) => {
+    const data = await ctx.prisma.team.findMany({
+      orderBy: [{ wins: "desc" }, { pointsFor: "desc" }],
+      take: 12,
+    });
+    return [...data];
+  }),
 });
