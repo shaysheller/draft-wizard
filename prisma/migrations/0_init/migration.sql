@@ -1,0 +1,27 @@
+-- CreateTable
+CREATE TABLE `Player` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `name` VARCHAR(191) NOT NULL,
+    `role` ENUM('QB', 'WR', 'TE', 'RB', 'DST', 'K') NOT NULL,
+    `adp` DOUBLE NOT NULL,
+    `bye` INTEGER NOT NULL DEFAULT -1,
+    `team` VARCHAR(191) NOT NULL DEFAULT '',
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Team` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `teamName` VARCHAR(191) NOT NULL,
+    `name` VARCHAR(191) NOT NULL,
+    `wins` INTEGER NOT NULL DEFAULT 0,
+    `losses` INTEGER NOT NULL DEFAULT 0,
+    `pointsFor` DOUBLE NOT NULL DEFAULT 0,
+    `pointsAgainst` DOUBLE NOT NULL DEFAULT 0,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+

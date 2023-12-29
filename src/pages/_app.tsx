@@ -5,6 +5,7 @@ import Head from "next/head";
 import { Toaster } from "react-hot-toast";
 import { DraftLayout } from "~/layouts/draftLayout";
 import { EntryLayout } from "~/layouts/entryLayout";
+import { QueryClient } from "@tanstack/react-query";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
