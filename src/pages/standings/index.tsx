@@ -1,6 +1,3 @@
-import { useState, useRef, MutableRefObject } from "react";
-import { type FormEvent } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
 import { api } from "~/utils/api";
 import { LoadingSpinner } from "~/components/loading";
 
@@ -15,10 +12,27 @@ import {
   TableHead,
 } from "~/components/table";
 
-const Standings = () => {
-  const { data, isLoading } = api.team.getAll.useQuery();
+//turn this into ssr
 
-  if (isLoading || !data) return <LoadingSpinner />;
+type Data = {
+  data:
+    | {
+        id: number;
+        createdAt: Date;
+        teamName: string;
+        name: string;
+        wins: number;
+        losses: number;
+        pointsFor: number;
+        pointsAgainst: number;
+      }[]
+    | undefined;
+};
+
+const Standings = ({ data }: Data) => {
+  //   const { data, isLoading } = api.team.getAll.useQuery();
+
+  if (!data) return <LoadingSpinner />;
 
   return (
     <div className="h-full  sm:w-fit md:w-3/4 lg:w-3/4">
@@ -49,7 +63,7 @@ const Standings = () => {
             <TableHead className="border-r border-solid border-white">
               Team
             </TableHead>
-            <TableHead className="border-r border-solid border-white text-right">
+            <TableHead className="border-r border-solid border-white text-center">
               W-L
             </TableHead>
             <TableHead className="border-r border-solid border-white text-center">
@@ -75,6 +89,15 @@ const Standings = () => {
     </div>
   );
 };
+
+export function getStaticProps() {
+  const { data, isLoading } = api.team.getAll.useQuery();
+  return {
+    props: {
+      data,
+    },
+  };
+}
 
 // const Standings = () => {
 //   const { data, isLoading } = api.team.getAll.useQuery();
