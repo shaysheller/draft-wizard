@@ -95,9 +95,9 @@ const Standings = ({ data }: Data) => {
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const ssg = generateSSGHelper();
-
+  //   console.log("context", context);
   const data = await ssg.team.getAll.fetch();
-  console.log("help", data);
+  //   console.log("help", data);
 
   if (data == undefined) throw new Error("no data");
 
