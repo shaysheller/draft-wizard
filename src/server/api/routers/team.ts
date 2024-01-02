@@ -38,6 +38,16 @@ export const teamRouter = createTRPCRouter({
       orderBy: [{ wins: "desc" }, { pointsFor: "desc" }],
       take: 12,
     });
-    return [...data];
+
+    const modifiedData = data.map((item) => {
+      return {
+        ...item,
+        createdAt: item.createdAt.toISOString(),
+      };
+    });
+
+    // console.log(modifiedData);
+
+    return modifiedData;
   }),
 });

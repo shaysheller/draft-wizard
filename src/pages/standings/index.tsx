@@ -1,5 +1,7 @@
-import { api } from "~/utils/api";
+// import { api } from "~/utils/api";
+import type { GetStaticProps, NextPage } from "next";
 import { LoadingSpinner } from "~/components/loading";
+import { generateSSGHelper } from "../../server/helpers/ssgHelper";
 
 import {
   Table,
@@ -31,6 +33,7 @@ type Data = {
 
 const Standings = ({ data }: Data) => {
   //   const { data, isLoading } = api.team.getAll.useQuery();
+  //   console.log(data);
 
   if (!data) return <LoadingSpinner />;
 
@@ -90,14 +93,21 @@ const Standings = ({ data }: Data) => {
   );
 };
 
-export function getStaticProps() {
-  const { data, isLoading } = api.team.getAll.useQuery();
+export const getStaticProps: GetStaticProps = async (context) => {
+  const ssg = generateSSGHelper();
+
+  const data = await ssg.team.getAll.fetch();
+  console.log("help", data);
+
+  if (data == undefined) throw new Error("no data");
+
   return {
     props: {
+      trpcState: ssg.dehydrate(),
       data,
     },
   };
-}
+};
 
 // const Standings = () => {
 //   const { data, isLoading } = api.team.getAll.useQuery();
